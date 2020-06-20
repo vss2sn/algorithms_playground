@@ -35,11 +35,15 @@ void preOrder(const std::shared_ptr<Node>& node) {
 
 
 // Not using std::set for the inorder traversal to allow non-unique elements
-std::shared_ptr<Node> constructBinaryTreeFromPreIn(
-  const std::vector<double>& pre_trav, const std::vector<double>& in_trav,
-  const int start, const int end) {
+std::shared_ptr<Node> constructBinaryTreeFromPreIn(const std::vector<double>& pre_trav, const std::vector<double>& in_trav,
+const int start, const int end) {
+  int pre_index = 0;
+  return constructBinaryTreeFromPreInUtil(pre_trav, in_trav, start, end, pre_index);
+}
 
-  static int pre_index = 0;
+std::shared_ptr<Node> constructBinaryTreeFromPreInUtil(
+  const std::vector<double>& pre_trav, const std::vector<double>& in_trav,
+  const int start, const int end, int& pre_index) {
 
   if (start > end) return nullptr;
 
@@ -49,8 +53,8 @@ std::shared_ptr<Node> constructBinaryTreeFromPreIn(
   pre_index++;
   if (start == end) return node;
 
-  node->left_ = constructBinaryTreeFromPreIn(pre_trav, in_trav, start, index - 1);
-  node->right_ = constructBinaryTreeFromPreIn(pre_trav, in_trav, index + 1, end);
+  node->left_ = constructBinaryTreeFromPreInUtil(pre_trav, in_trav, start, index - 1, pre_index);
+  node->right_ = constructBinaryTreeFromPreInUtil(pre_trav, in_trav, index + 1, end, pre_index);
 
   return node;
 }
@@ -59,8 +63,13 @@ std::shared_ptr<Node> constructBinaryTreeFromPreIn(
 std::shared_ptr<Node> constructBinaryTreeFromInPost(
   const std::vector<double>& in_trav, const std::vector<double>& post_trav,
   const int start, const int end) {
+    int post_index = in_trav.size()-1;
+    return constructBinaryTreeFromInPostUtil(in_trav, post_trav, start, end, post_index);
+}
 
-  static int post_index = in_trav.size()-1;
+std::shared_ptr<Node> constructBinaryTreeFromInPostUtil(
+  const std::vector<double>& in_trav, const std::vector<double>& post_trav,
+  const int start, const int end, int& post_index) {
 
   if (start > end) return nullptr;
 
@@ -70,68 +79,28 @@ std::shared_ptr<Node> constructBinaryTreeFromInPost(
   post_index--;
   if (start == end) return node;
 
-  node->right_ = constructBinaryTreeFromInPost(in_trav, post_trav, index + 1, end);
-  node->left_ = constructBinaryTreeFromInPost(in_trav, post_trav, start, index - 1);
+  node->right_ = constructBinaryTreeFromInPostUtil(in_trav, post_trav, index + 1, end, post_index);
+  node->left_ = constructBinaryTreeFromInPostUtil(in_trav, post_trav, start, index - 1, post_index);
 
   return node;
 }
 
-std::shared_ptr<Node> generateRandomBinaryTree(const int max_depth, const double min_val, const double max_val) {
-  if(max_depth == 0) return nullptr;
-  static std::random_device rd;
-  static std::mt19937 gen(rd());
-  static std::uniform_real_distribution<> dist(min_val, max_val);
-  static double random_null = dist(gen);
-  double value = dist(gen);
-  std::shared_ptr<Node> node = std::make_shared<Node>(value);
-  if(random_null < dist(gen)) {
-    node->left_ = generateRandomBinaryTree(max_depth - 1, min_val, max_val);
-  } else {
-    node->left_ = nullptr;
-  }
-  if(random_null < dist(gen)) {
-    node->right_ = generateRandomBinaryTree(max_depth - 1, min_val, max_val);
-  } else {
-    node->right_ = nullptr;
-  }
-  return node;
+std::shared_ptr<Node> generateRandomBinaryTree(const int max_depth, const double& min_val, const double& max_val) {
+  if (max_depth == 0) return nullptr;
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<> dist(min_val, max_val);
+  double random_null_thresh = 1.0/max_depth;
+  return generateRandomBinaryTreeUtil(max_depth, dist, gen, random_null_thresh);
 }
 
-std::shared_ptr<Node> generateRandomFullBinaryTree(const int max_depth, const double min_val, const double max_val) {
-  if(max_depth == 0) return nullptr;
-  static std::random_device rd;
-  static std::mt19937 gen(rd());
-  static std::uniform_real_distribution<> dist(min_val, max_val);
-  static double random_null = dist(gen);
-  double value = dist(gen);
-  std::shared_ptr<Node> node = std::make_shared<Node>(value);
-
-  if(random_null < dist(gen)) {
-    node->left_ = generateRandomFullBinaryTree(max_depth - 1, min_val, max_val);
-    node->right_ = generateRandomFullBinaryTree(max_depth - 1, min_val, max_val);
-  } else {
-    node->left_ = nullptr;
-    node->right_ = nullptr;
-  }
-  return node;
+std::shared_ptr<Node> generateRandomFullBinaryTree(const int max_depth, const double& min_val, const double& max_val) {
+  if (max_depth == 0) return nullptr;
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<> dist(min_val, max_val);
+  double random_null_thresh = 1.0/max_depth;
+  return generateRandomFullBinaryTreeUtil(max_depth, dist, gen, random_null_thresh);
 }
-//
-// std::shared_ptr<Node> generateRandomCompleteBinaryTree(const int max_depth, const double min_val, const double max_val) {
-//   if(max_depth == 0) return nullptr;
-//   static std::random_device rd;
-//   static std::mt19937 gen(rd());
-//   static std::uniform_real_distribution<> dist(min_val, max_val);
-//   static double random_null = dist(gen);
-//   double value = dist(gen);
-//   std::shared_ptr<Node> node = std::make_shared<Node>(value);
-//
-//   if(random_null < dist(gen)) {
-//     node->left_ = generateRandomBinaryTree(max_depth - 1, min_val, max_val);
-//     node->right_ = generateRandomBinaryTree(max_depth - 1, min_val, max_val);
-//   } else {
-//     node->left_ = nullptr;
-//     node->right_ = nullptr;
-//   }
-//   return node;
-// }
+
 }; // namespace binary_tree
