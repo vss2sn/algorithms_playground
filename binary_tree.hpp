@@ -1,3 +1,6 @@
+#ifndef BINARY_TREE_HPP
+#define BINARY_TREE_HPP
+
 #include <memory>
 #include <vector>
 #include <random>
@@ -105,3 +108,5 @@ std::shared_ptr<Node> generateRandomBinaryTree(const int max_depth, T& dist) {
 }
 
 }; // namespace binary_tree
+
+#endif  // BINARY_TREE_HPP
