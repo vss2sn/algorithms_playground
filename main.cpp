@@ -5,20 +5,16 @@
 #include <thread>
 
 #include "binary_tree.hpp"
+#include "binary_search_tree.hpp"
 #include "graphAM.hpp"
 
 int main () {
 
-  // Test for allPathsBetween
-  graphAM::GraphAM g = {
-    {0, 1, 1, 0, 0, 0},
-    {1, 0, 1, 0, 0, 1},
-    {1, 1, 0, 1, 1, 1},
-    {0, 0, 1, 0, 1, 1},
-    {0, 0, 1, 1, 0, 1},
-    {0, 1, 1, 1, 1, 0}
-  };
-
-  auto [paths_found, paths] = graphAM::colourGraph(g, 4);
+  std::vector<double> pre = {10, 5, 1, 7, 40, 50};
+  std::shared_ptr<binary_tree::Node> root = binary_search_tree::constructTreeFromPreOrder(pre);
+  std::cout << "The reconstructed tree is: " << '\n';
+  inOrder(root);
+  std::cout << '\n';
   return 0;
+
 }
