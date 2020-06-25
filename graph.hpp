@@ -30,6 +30,17 @@ public:
   // Colour graph using n_c colours
   virtual std::tuple<bool, std::vector<int>> colourGraph(int n_c) const;
 
+  // Dijkstra from source to sink
+  virtual std::tuple<bool, double, std::vector<int>> Dijkstra(const int source, const int sink) const;
+
+  // Dijkstra from source to all possible points
+  virtual std::tuple<bool, std::vector<std::pair<int, double>>> Dijkstra(const int source) const;
+
+  // Find all strongly connected components of a graph
+  virtual std::vector<std::vector<int>> KosarajuAlgorithm() const;
+
+  // Check if graph is strongly connected
+  virtual bool StronglyConnectedKosaraju() const;
 };
 
 #endif  // GRAPH_HPP

@@ -52,6 +52,12 @@ private:
   void allPathsBetweenUtil(const int source, int sink, std::vector<int>& path,
       std::vector<std::vector<int>>& paths, std::vector<bool>& visited) const;
 
+  void PrintAllDijkstraPathsFound(const int source, const std::vector<std::pair<int, double>>& p_md) const;
+  void DFSUtilWithFinishTime(int source, std::vector<bool>& visited, std::stack<int>& visit_order) const;
+
+  std::vector<std::vector<int>> KosarajuAlgorithmUtil();
+  bool StronglyConnectedKosarajuUtil();
+
 public:
   GraphAM(const int V = 11, const bool random = true, const bool different_weights = true);
   GraphAM(const GraphAM& g_am);
@@ -82,7 +88,17 @@ public:
   // Colour graph using n_c colours
   virtual std::tuple<bool, std::vector<int>> colourGraph(int n_c) const override;
 
+  // Dijkstra from source to sink
+  virtual std::tuple<bool, double, std::vector<int>> Dijkstra(const int source, const int sink) const override;
 
+  // Dijkstra from source to all possible points
+  virtual std::tuple<bool, std::vector<std::pair<int, double>>> Dijkstra(const int source) const override;
+
+  // Find all strongly connected components of a graph
+  virtual std::vector<std::vector<int>> KosarajuAlgorithm() const override;
+
+  // Check if graph is strongly connected
+  virtual bool StronglyConnectedKosaraju() const override;
 };
 
 /* ------------------------------- */

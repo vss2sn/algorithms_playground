@@ -4,8 +4,8 @@
 #include <random>
 #include <thread>
 
-#include "binary_tree.hpp"
 #include "binary_search_tree.hpp"
+#include "binary_tree.hpp"
 #include "graphAM.hpp"
 #include "sort.hpp"
 

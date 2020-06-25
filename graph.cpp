@@ -55,3 +55,26 @@ std::tuple<bool, std::vector<int>> Graph::colourGraph(int n_c) const {
   std::cout << __FUNCTION__ << " not yet defined" << '\n';
    return {0, std::vector<int>()};
 }
+
+std::tuple<bool, double, std::vector<int>> Graph::Dijkstra(const int source, const int sink) const {
+  std::cout << __FUNCTION__ << " not yet defined" << '\n';
+   return {0, 0, std::vector<int>()};
+}
+
+// Dijkstra from source to all possible points
+std::tuple<bool, std::vector<std::pair<int, double>>> Graph::Dijkstra(const int source) const {
+  std::cout << __FUNCTION__ << " not yet defined" << '\n';
+   return {0, std::vector<std::pair<int, double>>()};
+}
+
+// Find all strongly connected components of a graph
+std::vector<std::vector<int>> Graph::KosarajuAlgorithm() const {
+  std::cout << __FUNCTION__ << " not yet defined" << '\n';
+  return std::vector<std::vector<int>>();
+}
+
+// Check if graph is strongly connected
+bool Graph::StronglyConnectedKosaraju() const {
+  std::cout << __FUNCTION__ << " not yet defined" << '\n';
+   return false;
+}

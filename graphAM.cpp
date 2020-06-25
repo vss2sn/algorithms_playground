@@ -320,7 +320,7 @@ void GraphAM::DFSUtil(const int source, std::vector<bool>& visited) const {
 
   visited[source] = true;
   for(int i=0; i < v; i++) {
-    if(g[source][i] !=0) {
+    if(g[source][i] !=0  && !visited[i]) {
       DFSUtil(i, visited);
     }
   }
@@ -462,6 +462,196 @@ std::tuple<bool, std::vector<int>> GraphAM::colourGraph(const int n_c) const {
   return {true, colour};
 }
 
+// Cannot handle negative graph weights
+std::tuple<bool, double, std::vector<int>> GraphAM::Dijkstra(const int source, const int sink) const {
+
+  struct PQSortSecondPair { //
+    bool operator()(const std::pair<int, double> p1, const std::pair<int, double> p2) {
+      return p1.second > p2. second;
+    }
+  };
+
+
+  std::vector<std::pair<int, double>> p_md(v, std::make_pair(-1, std::numeric_limits<double>::max())); // parent, min distance
+  std::priority_queue<std::pair<int, double>, std::vector<std::pair<int, double>>, PQSortSecondPair> pq; // <point id, cost to get there>
+  pq.push({source, 0});
+  bool found_path = false;
+  std::pair<int, double> current = pq.top();
+  while(!pq.empty()) {
+    current = pq.top();
+    pq.pop();
+    if(current.first == sink) {
+      found_path = true;
+      break;
+    }
+    for(int i = 0; i < v; i++) {
+      if((g[current.first][i]!=0) &&
+      (current.second + g[current.first][i] < p_md[i].second)) {
+        pq.push(std::make_pair(i, current.second + g[current.first][i]));
+        p_md[i] = std::make_pair(current.first, current.second + g[current.first][i]);
+      }
+    }
+  }
+
+  if(found_path == false) {
+    std::cout << __FUNCTION__ << "Path not found between " << source << ' ' << sink << '\n';
+    return {false, -1, std::vector<int>()};
+  } else {
+    int cv = sink;
+    double path_cost = 0;
+    std::vector<int> path;
+    while(cv!=source) {
+      path.push_back(cv);
+      cv = p_md[cv].first;
+      path_cost += p_md[cv].second;
+    }
+    path.push_back(source);
+    std::reverse(path.begin(), path.end());
+    std::cout << __FUNCTION__ << "Path found between " << source << ' ' << sink << '\n';
+    return {found_path, path_cost, path};
+  }
+}
+
+void GraphAM::PrintAllDijkstraPathsFound(const int source, const std::vector<std::pair<int, double>>& p_md) const {
+  for(int i = 0; i < p_md.size(); i++) {
+    if(p_md[i].first != -1) {
+      std::vector<int> path;
+      path.push_back(i);
+      std::cout << __FUNCTION__ <<  " | " << "Path: ";
+      int cv = p_md[i].first;
+      while(cv != source) {
+        path.push_back(cv);
+        cv = p_md[cv].first;
+      }
+      path.push_back(source);
+      std::reverse(path.begin(), path.end());
+      for(const auto& ele : path) {
+        std::cout << ele << ' ';
+      }
+      std::cout << '\n';
+      std::cout << __FUNCTION__ <<  " | " << "Cost: " << p_md[i].second << '\n';
+    }
+  }
+}
+
+std::tuple<bool, std::vector<std::pair<int, double>>> GraphAM::Dijkstra(const int source) const {
+
+  struct PQSortSecondPair { //
+    bool operator()(const std::pair<int, double> p1, const std::pair<int, double> p2) {
+      return p1.second > p2. second;
+    }
+  };
+
+
+  std::vector<std::pair<int, double>> p_md(v, std::make_pair(-1, std::numeric_limits<double>::max())); // parent, min distance
+  std::priority_queue<std::pair<int, double>, std::vector<std::pair<int, double>>, PQSortSecondPair> pq; // <point id, cost to get there>
+  pq.push({source, 0});
+  std::pair<int, double> current = pq.top();
+  while(!pq.empty()) {
+    current = pq.top();
+    pq.pop();
+    // Finding for all points so no early stop condition
+    for(int i = 0; i < v; i++) {
+      if((g[current.first][i]!=0) &&
+      (current.second + g[current.first][i] < p_md[i].second)) {
+        pq.push(std::make_pair(i, current.second + g[current.first][i]));
+        p_md[i] = std::make_pair(current.first, current.second + g[current.first][i]);
+      }
+    }
+  }
+  // Check if any paths found
+  bool found_any = false;
+  for(const auto& ele : p_md) {
+    if(ele.first!=-1) {
+      found_any = true;
+      break;
+    }
+  }
+  PrintAllDijkstraPathsFound(source, p_md);
+  return {found_any, p_md};
+}
+
+// visit
+void GraphAM::DFSUtilWithFinishTime(int source, std::vector<bool>& visited, std::stack<int>& visit_order) const {
+  visited[source] = true;
+  for(int i = 0; i < v; i++) {
+    if(!visited[i] && g[source][i]!=0) {
+      DFSUtilWithFinishTime(i, visited, visit_order);
+    }
+  }
+  visit_order.push(source);
+}
+
+std::vector<std::vector<int>> GraphAM::KosarajuAlgorithmUtil() {
+  std::vector<bool> visited(v, false);
+  std::stack<int> visit_order;
+  for(int i = 0; i < v; i++) {
+    if (!visited[i]) {
+      DFSUtilWithFinishTime(i, visited, visit_order);
+    }
+  }
+
+  for(int i=0; i< v; i++) {
+    for(int j = i+1; j < v; j++) {
+      std::swap(g[i][j], g[j][i]);
+    }
+  }
+
+  std::fill(visited.begin(), visited.end(), false);
+
+  std::vector<std::vector<int>> components;
+  while(!visit_order.empty()) {
+    int vert = visit_order.top();
+    if(!visited[vert]) {
+      std::stack<int> component_stack;
+      std::vector<int> component_vector;
+      DFSUtilWithFinishTime(vert, visited, component_stack);
+      while(!component_stack.empty()) {
+        component_vector.push_back(component_stack.top());
+        component_stack.pop();
+      }
+      components.push_back(component_vector);
+    }
+    visit_order.pop();
+  }
+  return components;
+}
+
+// Needs to modify graph
+std::vector<std::vector<int>> GraphAM::KosarajuAlgorithm() const {
+  GraphAM g_am(g);
+  return g_am.KosarajuAlgorithmUtil();
+}
+
+bool GraphAM::StronglyConnectedKosarajuUtil() {
+  std::vector<bool> visited(v, false);
+  std::stack<int> visit_order;
+  DFSUtil(0, visited);
+
+  for(const auto& ele : visited) {
+    if(!ele) return false;
+  }
+
+  for(int i=0; i < v; i++) {
+    for(int j = i+1; j< v; j++) {
+      std::swap(g[i][j], g[j][i]);
+    }
+  }
+
+  std::fill(visited.begin(), visited.end(), false);
+  DFSUtil(0, visited);
+
+  for(const auto& ele : visited) {
+    if(!ele) return false;
+  }
+
+  return true;
+}
+
+bool GraphAM::StronglyConnectedKosaraju() const {
+  GraphAM g_am(g);
+  return g_am.StronglyConnectedKosarajuUtil();
+}
 
 } // namespace graphAM
 
@@ -594,6 +784,51 @@ std::tuple<bool, std::vector<int>> GraphAM::colourGraph(const int n_c) const {
 //
 //   g_am = graphAM::GraphAM(g);
 //   auto [coloured, colours] = g_am.colourGraph(4);
+//
+// g = {
+//    {0, 1, 1, 0, 0, 0},
+//    {1, 0, 1, 0, 0, 0},
+//    {1, 1, 0, 1, 1, 0},
+//    {0, 0, 1, 0, 1, 0},
+//    {0, 0, 1, 1, 0, 1},
+//    {0, 1, 1, 1, 1, 0}
+//   };
+//
+//   g_am = graphAM::GraphAM(g);
+//   // const auto[path_found, path_cost, path] = g_am.Dijkstra(0, 5);
+//   const auto[path_found, p_md] = g_am.Dijkstra(0);
+//
+//   g = {
+//    {0, 0, 1, 1, 0},
+//    {1, 0, 0, 0, 0},
+//    {0, 1, 0, 0, 0},
+//    {0, 0, 0, 0, 1},
+//    {0, 0, 0, 0, 0},
+//   };
+//   g_am = graphAM::GraphAM(g);
+//   const auto components = g_am.KosarajuAlgorithm();
+//   for(auto& row : components) {
+//     std::cout << "Connected component: ";
+//     for(auto & element : row) {
+//       std::cout << element;
+//     }
+//     std::cout << '\n';
+//   }
+//
+//   g = {
+//    {0, 0, 1, 1, 0},
+//    {1, 0, 0, 0, 0},
+//    {1, 1, 0, 0, 0},
+//    {1, 0, 0, 0, 1},
+//    {0, 0, 0, 1, 0},
+//   };
+//   g_am = graphAM::GraphAM(g);
+//   const auto strongly_connected = g_am.StronglyConnectedKosaraju();
+//   if(strongly_connected) {
+//     std::cout << "The graph is strongly connected" << '\n';
+//   } else {
+//     std::cout << "The graph is not strongly connected" << '\n';
+//   }
 //
 //   return 0;
 // }
