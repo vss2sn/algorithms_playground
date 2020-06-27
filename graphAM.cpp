@@ -31,7 +31,7 @@ bool Edge::operator >= (const Edge& other) const {
   return w >= other.w;
 }
 
-void PrintGraph(const GraphAM& g) {
+void GraphAM::PrintGraph() const {
   std::cout << "GraphAM: " << '\n';
   for(const auto& row : g) {
     for(const auto ele : row) {
@@ -41,25 +41,35 @@ void PrintGraph(const GraphAM& g) {
   }
 }
 
-GraphAM createGraphAM(const int V, const bool random, const bool different_weights) {
-  GraphAM g = std::vector<std::vector<double>>(V, std::vector<double>(V,0));
+GraphAM::GraphAM(const GraphAM& g_am) {
+  this->g = g_am.g;
+  this->v = g_am.v;
+}
+GraphAM::GraphAM(const int V, const bool random, const bool different_weights) {
+  g = std::vector<std::vector<double>>(V, std::vector<double>(V,0));
   if(random) {
     if(different_weights){
       std::uniform_int_distribution<> dist(0, V);
-      return createGraphAMUtil(V, dist);
+      GraphAMUtil(V, dist);
     }
     else {
       std::uniform_int_distribution<> dist(0, 1);
-      return createGraphAMUtil(V, dist);
+      GraphAMUtil(V, dist);
     }
   }
   else {
-    return GraphAM(V, std::vector<double>(V, 0));
+    std::vector<std::vector<double>>(V, std::vector<double>(V, 0));
   }
 }
 
-std::tuple<bool, std::vector<int>> BFS (GraphAM& g, int source , int sink) {
-  int v = g.size();
+GraphAM::GraphAM(const std::vector<std::vector<double>>& g_v) {
+  g = g_v;
+  v = g.size();
+}
+
+
+std::tuple<bool, std::vector<int>> GraphAM::BFS (int source , int sink) const {
+
   if(source >= v || sink >= v ) return {false, std::vector<int>()};
 
   std::vector<int> parent(v, -1);
@@ -99,9 +109,8 @@ std::tuple<bool, std::vector<int>> BFS (GraphAM& g, int source , int sink) {
 
 }
 
+std::tuple<bool, std::vector<int>> GraphAM::DFS (int source , int sink) const {
 
-std::tuple<bool, std::vector<int>> DFS (GraphAM& g, int source , int sink) {
-  int v = g.size();
   if(source >= v || sink >= v ) return {false, std::vector<int>()};
 
   std::vector<int> parent(v, -1);
@@ -142,10 +151,10 @@ std::tuple<bool, std::vector<int>> DFS (GraphAM& g, int source , int sink) {
 }
 
 // Prim's algorithm only works on undirected complete graphs
-bool Prim(GraphAM& g) {
+bool GraphAM::Prim() const {
   // TODO: Add check if connected
 
-  int v = g.size();
+
   if( v == 0 ) return false;
 
   // This can be converted to a map of <point, parent>
@@ -199,32 +208,36 @@ bool Prim(GraphAM& g) {
   return true;
 }
 
-double fordFulkerson(GraphAM& g, int source, int sink) {
-  GraphAM rg(g);
+double GraphAM::fordFulkersonRGUtil(int source, int sink) {
   double max_flow = 0;
   while(true){
-    auto [found_path, path] = BFS(rg, source , sink);
+    auto [found_path, path] = BFS(source , sink);
     if(!found_path) break;
     double flow = std::numeric_limits<double>::max();
     for(int i = 1; i < path.size(); i++ ) {
-      flow = std::min(flow, rg[path[i-1]][path[i]]);
+      flow = std::min(flow, g[path[i-1]][path[i]]);
     }
     for(int i = 1; i < path.size(); i++ ) {
-      rg[path[i-1]][path[i]] -= flow;
-      rg[path[i]][path[i-1]] += flow;
+      g[path[i-1]][path[i]] -= flow;
+      g[path[i]][path[i-1]] += flow;
     }
     max_flow +=flow;
   }
   return max_flow;
 }
 
+double GraphAM::fordFulkerson(int source, int sink) const {
+  GraphAM rg(*this);
+  return rg.fordFulkersonRGUtil(source, sink);
+}
 
-int UnionFindFindUtil(const int v, const std::vector<int>& parent) {
+
+int GraphAM::UnionFindFindUtil(const int v, const std::vector<int>& parent) const {
   if(parent[v] == -1) return v;
   return UnionFindFindUtil(parent[v], parent);
 }
 
-void UnionFindUnionUtil(int v1, int v2, std::vector<int>& parent) {
+void GraphAM::UnionFindUnionUtil(int v1, int v2, std::vector<int>& parent) const {
   // The two calls below to find are not required as in the union find algorithm,
   // the parents are already found and the unionutil is only called when they
   // are not equal. Left here for completeness (and future use) and as it's only going to be a
@@ -234,8 +247,8 @@ void UnionFindUnionUtil(int v1, int v2, std::vector<int>& parent) {
   if (rv1 != rv2) parent[rv2] = rv1;
 }
 
-bool UnionFindDetectCycle(const GraphAM& g) {
-  int v = g.size();
+bool GraphAM::UnionFindDetectCycle() const {
+
   std::vector<int> parent(v, -1);
   for (int i = 0; i < v ; i++) {
     for (int j = 0; j < v; j++) {
@@ -256,15 +269,14 @@ bool UnionFindDetectCycle(const GraphAM& g) {
   return false;
 }
 
-
-int UnionFindRCFindUtil(int v, std::vector<std::pair<int, int>>& subsets) {
+int GraphAM::UnionFindRCFindUtil(int v, std::vector<std::pair<int, int>>& subsets) const {
   if(subsets[v].first != v) {
     subsets[v].first = UnionFindRCFindUtil(subsets[v].first, subsets);
   }
   return subsets[v].first;
 }
 
-void UnionFindRCUnionUtil(int v1, int v2, std::vector<std::pair<int, int>>& subsets) {
+void GraphAM::UnionFindRCUnionUtil(int v1, int v2, std::vector<std::pair<int, int>>& subsets) const {
   int rv1 = UnionFindRCFindUtil(v1, subsets);
   int rv2 = UnionFindRCFindUtil(v2, subsets);
 
@@ -278,8 +290,8 @@ void UnionFindRCUnionUtil(int v1, int v2, std::vector<std::pair<int, int>>& subs
   }
 }
 
-bool UnionFindRCDetectCycle (GraphAM& g) {
-  int v = g.size();
+bool GraphAM::UnionFindRCDetectCycle() const {
+
   std::vector<std::pair<int, int>> subsets;
   subsets.reserve(v);
   for(int i=0;i<v;i++) {
@@ -304,30 +316,30 @@ bool UnionFindRCDetectCycle (GraphAM& g) {
   return true;
 }
 
-void DFSUtil (const GraphAM& g, int source, std::vector<bool>& visited) {
-  int v = g.size();
+void GraphAM::DFSUtil(const int source, std::vector<bool>& visited) const {
+
   visited[source] = true;
   for(int i=0; i < v; i++) {
     if(g[source][i] !=0) {
-      DFSUtil(g, i, visited);
+      DFSUtil(i, visited);
     }
   }
 }
 
-std::tuple<bool, int> FindMotherVertex (const GraphAM& g) {
-  int v = g.size();
+std::tuple<bool, int> GraphAM::FindMotherVertex() const {
+
   if(v == 0) return {false, -1};
   std::vector<bool> visited(v, false);
   int mv = -1;
   for(int i=0; i<v; i++) {
     if(!visited[i]) {
-      DFSUtil(g, i, visited);
+      DFSUtil(i, visited);
       mv = i;
     }
   }
 
   std::fill(visited.begin(), visited.end(), false);
-  DFSUtil(g, mv, visited);
+  DFSUtil(mv, visited);
   for(const auto& ele : visited) {
     if(!ele) return {false, -1};
   }
@@ -336,8 +348,8 @@ std::tuple<bool, int> FindMotherVertex (const GraphAM& g) {
   return {true, mv};
 }
 
-void allPathsBetweenUtil(const GraphAM& g, int source, int sink, std::vector<int>& path,
-  std::vector<std::vector<int>>& paths, std::vector<bool>& visited) {
+void GraphAM::allPathsBetweenUtil(const int source, int sink, std::vector<int>& path,
+  std::vector<std::vector<int>>& paths, std::vector<bool>& visited) const {
 
   visited[sink] = true;
   path.push_back(sink);
@@ -349,10 +361,10 @@ void allPathsBetweenUtil(const GraphAM& g, int source, int sink, std::vector<int
     return;
   }
 
-  const int v = g.size();
+
   for(int i = 0; i < v ; i++) {
     if(g[sink][i] != 0 && !visited[i]) {
-      allPathsBetweenUtil(g, source, i, path, paths, visited);
+      allPathsBetweenUtil(source, i, path, paths, visited);
     }
   }
 
@@ -361,15 +373,15 @@ void allPathsBetweenUtil(const GraphAM& g, int source, int sink, std::vector<int
   return;
 }
 
-std::tuple<bool, std::vector<std::vector<int>>> allPathsBetween(const GraphAM& g, int source, int sink) {
-  const int v = g.size();
+std::tuple<bool, std::vector<std::vector<int>>> GraphAM::allPathsBetween(const int source, int sink) const {
+
   if(v==0) return {false, std::vector<std::vector<int>>()};
 
   std::vector<int> path;
   std::vector<std::vector<int>> paths;
   std::vector<bool> visited(v, false);
 
-  allPathsBetweenUtil(g, source, sink, path, paths, visited);
+  allPathsBetweenUtil(source, sink, path, paths, visited);
   if(paths.empty()) {
     std::cout << __FUNCTION__ << " | " <<  " No path found" << '\n';
     return {false, paths};
@@ -386,9 +398,9 @@ std::tuple<bool, std::vector<std::vector<int>>> allPathsBetween(const GraphAM& g
   }
 }
 
-bool colourGraphUtil(const GraphAM& g, int vert, const int n_c, std::vector<int>& colour) {
+bool GraphAM::colourGraphUtil(const int vert, const int n_c, std::vector<int>& colour) const {
   bool safe_to_colour = true;
-  const int v = g.size();
+
   for(int c = 1; c <= n_c; c++) {
     colour[vert] = c;
     safe_to_colour = true;
@@ -408,7 +420,7 @@ bool colourGraphUtil(const GraphAM& g, int vert, const int n_c, std::vector<int>
     for(int i=0; i < v; i++) {
       if(g[vert][i]!=0){
         if(colour[i] == 0) {
-          safe_to_colour = colourGraphUtil(g, i, n_c, colour);
+          safe_to_colour = colourGraphUtil(i, n_c, colour);
         } else if (colour[i] == c) {  // Check to make sure any new colouring does not conflict
           safe_to_colour = false;       // with the current vertex's colour
         }
@@ -423,8 +435,8 @@ bool colourGraphUtil(const GraphAM& g, int vert, const int n_c, std::vector<int>
   return safe_to_colour;
 }
 
-std::tuple<bool, std::vector<int>> colourGraph(const GraphAM& g, const int n_c) {
-  int v = g.size();
+std::tuple<bool, std::vector<int>> GraphAM::colourGraph(const int n_c) const {
+
   if(v == 0 && n_c > 0 ) return {true, std::vector<int>()};
   if(v != 0 && n_c == 0 ) return {false, std::vector<int>()};
 
@@ -439,7 +451,7 @@ std::tuple<bool, std::vector<int>> colourGraph(const GraphAM& g, const int n_c) 
   std::vector<int> colour(v, 0);
   for(auto vert : colour) {
     if(vert == 0) {
-      bool coloured = colourGraphUtil(g, vert, n_c, colour);
+      bool coloured = colourGraphUtil(vert, n_c, colour);
       if(!coloured) {
         std::cout << __FUNCTION__ << " | " <<  " Unable to colour graph using " << n_c << " colours " << '\n';
         return {false, std::vector<int>()};
@@ -456,34 +468,37 @@ std::tuple<bool, std::vector<int>> colourGraph(const GraphAM& g, const int n_c) 
 
 // int main () {
 //
+//   // Common graph for most of the tests below
+//   graphAM::GraphAM g_am;
+//
 //   // Test random distribution
 //   std::binomial_distribution<> dist(1,0.2);
-//   graphAM::GraphAM g1 = graphAM::createGraphAM(11, dist);
+//   graphAM::GraphAM g1(11, dist);
 //   std::cout << "Test random distribution " << '\n';
-//   graphAM::PrintGraph(g1);
+//   g1.PrintGraph();
 //
 //   // Random with different weights
-//   graphAM::GraphAM g2 = graphAM::createGraphAM(11, true, true);
+//   graphAM::GraphAM g2(11, true, true);
 //   std::cout << "Test graph with different_weights " << '\n';
-//   graphAM::PrintGraph(g2);
+//   g2.PrintGraph();
 //
 //   // Random with same weights
-//   graphAM::GraphAM g3 = graphAM::createGraphAM(11, true, false);
+//   graphAM::GraphAM g3(11, true, false);
 //   std::cout << "Test graph with same weights " << '\n';
-//   graphAM::PrintGraph(g3);
+//   g3.PrintGraph();
 //
 //   // Empty graph
-//   graphAM::GraphAM g4 = graphAM::createGraphAM(11, false);
+//   graphAM::GraphAM g4(11, false);
 //   std::cout << "Test empty graph " << '\n';
-//   graphAM::PrintGraph(g4);
+//   g4.PrintGraph();
 //
 //   // No argumenmts specified
-//   graphAM::GraphAM g5 = graphAM::createGraphAM();
+//   graphAM::GraphAM g5;
 //   std::cout << "Test no arguments specified " << '\n';
-//   graphAM::PrintGraph(g5);
+//   g5.PrintGraph();
 //
 //   // Test for BFS/DFS/Prim
-//   graphAM::GraphAM g = {
+//   std::vector<std::vector<double>> g = {
 //     { 1, 1, 1, 0, 0 },
 //     { 0, 1, 1, 0, 0 },
 //     { 0, 0, 1, 1, 0 },
@@ -491,7 +506,8 @@ std::tuple<bool, std::vector<int>> colourGraph(const GraphAM& g, const int n_c) 
 //     { 0, 0, 0, 0, 1 },
 //   };
 //
-//   auto [path_found_bfs, path_bfs] = graphAM::BFS(g, 0, 4);
+//   g_am = graphAM::GraphAM(g);
+//   auto [path_found_bfs, path_bfs] = g_am.BFS(0, 4);
 //   if(path_found_bfs){
 //     std::cout << "Path: " << '\n';
 //     for(const auto& ele : path_bfs) std::cout << ele << "   ";
@@ -500,7 +516,7 @@ std::tuple<bool, std::vector<int>> colourGraph(const GraphAM& g, const int n_c) 
 //     std::cout << "No path found" << '\n';
 //   }
 //
-//   auto [path_found_dfs, path_dfs] = graphAM::DFS(g, 0, 4);
+//   auto [path_found_dfs, path_dfs] = g_am.DFS(0, 4);
 //   if(path_found_dfs){
 //     std::cout << "Path: " << '\n';
 //     for(const auto& ele : path_dfs) std::cout << ele << "   ";
@@ -510,70 +526,74 @@ std::tuple<bool, std::vector<int>> colourGraph(const GraphAM& g, const int n_c) 
 //   }
 //
 //   // Test for Prim
-//   auto found_prim = graphAM::Prim(g);
+//   auto found_prim = g_am.Prim();
 //
-// graphAM::GraphAM g = {
-//   {0, 16, 13, 0, 0, 0},
-//   {0, 0, 10, 12, 0, 0},
-//   {0, 4, 0, 0, 14, 0},
-//   {0, 0, 9, 0, 0, 20},
-//   {0, 0, 0, 7, 0, 4},
-//   {0, 0, 0, 0, 0, 0}
-// };
+//   g = {
+//     {0, 16, 13, 0, 0, 0},
+//     {0, 0, 10, 12, 0, 0},
+//     {0, 4, 0, 0, 14, 0},
+//     {0, 0, 9, 0, 0, 20},
+//     {0, 0, 0, 7, 0, 4},
+//     {0, 0, 0, 0, 0, 0}
+//   };
 //
-// double flow = graphAM::fordFulkerson(g, 0, 5);
-// std::cout << "Flow from source to sink: " << flow << '\n';
+//   g_am = graphAM::GraphAM(g);
+//   double flow = g_am.fordFulkerson(0, 5);
+//   std::cout << "Flow from source to sink: " << flow << '\n';
 //
-// return 0;
+//   // Test for mother vertex
+//   g = {
+//     {0, 1, 1, 0, 0, 0, 0},
+//     {0, 0, 0, 1, 0, 0, 0},
+//     {0, 0, 0, 0, 0, 0, 0},
+//     {0, 0, 0, 0, 0, 0, 0},
+//     {0, 1, 0, 0, 0, 0, 0},
+//     {0, 0, 1, 0, 0, 0, 1},
+//     {1, 0, 0, 0, 1, 0, 0}
+//   };
+//
+//   g_am = graphAM::GraphAM(g);
+//   auto [mother_vertex_found, mv] = g_am.FindMotherVertex();
+//
+//   // Test for UnionFind and UnionFindRC
+//   g = {
+//     {0, 1, 1, 0, 0, 0},
+//     {0, 0, 0, 1, 0, 0},
+//     {0, 0, 0, 0, 1, 0},
+//     {0, 0, 0, 0, 0, 1},
+//     {0, 0, 0, 0, 0, 1},
+//     {0, 0, 0, 0, 0, 0}
+//   };
+//
+//   g_am = graphAM::GraphAM(g);
+//   bool cycle_found = g_am.UnionFindRCDetectCycle();
+//   std::cout << "Cycle found in graph: " << cycle_found << '\n';
+//
+//   // Test for allPathsBetween
+//   g = {
+//     {0, 1, 1, 0, 0, 0},
+//     {1, 0, 1, 0, 0, 1},
+//     {1, 1, 0, 1, 1, 1},
+//     {0, 0, 1, 0, 1, 1},
+//     {0, 0, 1, 1, 0, 1},
+//     {0, 1, 1, 1, 1, 0}
+//   };
+//
+//   g_am = graphAM::GraphAM(g);
+//   auto [paths_found, paths] = g_am.allPathsBetween(0, 5);
+//
+//   // Test for colourGraph
+//   g = {
+//     {0, 1, 1, 0, 0, 0},
+//     {1, 0, 1, 0, 0, 1},
+//     {1, 1, 0, 1, 1, 1},
+//     {0, 0, 1, 0, 1, 1},
+//     {0, 0, 1, 1, 0, 1},
+//     {0, 1, 1, 1, 1, 0}
+//   };
+//
+//   g_am = graphAM::GraphAM(g);
+//   auto [coloured, colours] = g_am.colourGraph(4);
+//
 //   return 0;
 // }
-
-// Test for mother vertex
-// graphAM::GraphAM g = {
-//   {0, 1, 1, 0, 0, 0, 0},
-//   {0, 0, 0, 1, 0, 0, 0},
-//   {0, 0, 0, 0, 0, 0, 0},
-//   {0, 0, 0, 0, 0, 0, 0},
-//   {0, 1, 0, 0, 0, 0, 0},
-//   {0, 0, 1, 0, 0, 0, 1},
-//   {1, 0, 0, 0, 1, 0, 0}
-// };
-//
-// auto [mother_vertex_found, mv] = graphAM::FindMotherVertex(g);
-//
-// Test for UnionFind and UnionFindRC
-// graphAM::GraphAM g = {
-//   {0, 1, 1, 0, 0, 0},
-//   {0, 0, 0, 1, 0, 0},
-//   {0, 0, 0, 0, 1, 0},
-//   {0, 0, 0, 0, 0, 1},
-//   {0, 0, 0, 0, 0, 1},
-//   {0, 0, 0, 0, 0, 0}
-// };
-//
-// bool cycle_found = graphAM::UnionFindRCDetectCycle(g);
-// std::cout << "Cycle found in graph: " << cycle_found << '\n';
-//
-// Test for allPathsBetween
-// graphAM::GraphAM g = {
-//   {0, 1, 1, 0, 0, 0},
-//   {1, 0, 1, 0, 0, 1},
-//   {1, 1, 0, 1, 1, 1},
-//   {0, 0, 1, 0, 1, 1},
-//   {0, 0, 1, 1, 0, 1},
-//   {0, 1, 1, 1, 1, 0}
-// };
-//
-// auto [paths_found, paths] = graphAM::allPathsBetween(g, 0, 5);
-// 
-// Test for colourGraph
-// graphAM::GraphAM g = {
-//   {0, 1, 1, 0, 0, 0},
-//   {1, 0, 1, 0, 0, 1},
-//   {1, 1, 0, 1, 1, 1},
-//   {0, 0, 1, 0, 1, 1},
-//   {0, 0, 1, 1, 0, 1},
-//   {0, 1, 1, 1, 1, 0}
-// };
-//
-// auto [paths_found, paths] = graphAM::colourGraph(g, 4);
