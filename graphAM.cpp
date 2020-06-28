@@ -12,25 +12,6 @@
 
 namespace graphAM {
 
-Edge::Edge(int u, int v, double w) {
-  this->u = u;
-  this->v = v;
-  this->w = w;
-}
-
-bool Edge::operator < (const Edge& other) const {
-  return w < other.w;
-}
-bool Edge::operator <= (const Edge& other) const {
-  return w <= other.w;
-}
-bool Edge::operator > (const Edge& other) const {
-  return w > other.w;
-}
-bool Edge::operator >= (const Edge& other) const {
-  return w >= other.w;
-}
-
 void GraphAM::PrintGraph() const {
   std::cout << "GraphAM: " << '\n';
   for(const auto& row : g) {
@@ -151,22 +132,36 @@ std::tuple<bool, std::vector<int>> GraphAM::DFS (int source , int sink) const {
 }
 
 // Prim's algorithm only works on undirected complete graphs
-bool GraphAM::Prim() const {
-  // TODO: Add check if connected
+// This will fail if the adjacency matrix is not symetrical
+std::tuple<bool, std::vector<Edge>> GraphAM::Prim() const {
+  if( v == 0 ) return {false, std::vector<Edge>()};
 
-
-  if( v == 0 ) return false;
+  for(int i =0; i < v; i++) {
+    for (int j = i+1; j < v; j++) {
+      if(g[i][j] != g[j][i]) {
+        std::cout << "Edge from " << i << " to " << j << " not symetric/undirected. \
+        Prim's algorithm  will fail. " << '\n';
+        return {false, std::vector<Edge>()};
+      }
+    }
+  }
 
   // This can be converted to a map of <point, parent>
   // BUt given that by the end of this algorithm it will contain v elements
-  // anyway, sticking to vctor for now
+  // anyway, sticking to vector for now
   // Vector size is unchanging so no copy operations; and access is O(1)
   std::vector<int> parent(v, -1);
 
   int source = 0;
   parent[source] = source;
 
-  std::priority_queue<Edge> edge_pq;
+  struct EdgeCompare {
+    bool operator () (const Edge e1, const Edge e2) const {
+      return e1.w > e2.w;
+    }
+  };
+
+  std::priority_queue<Edge, std::vector<Edge>, EdgeCompare> edge_pq;
 
   // Insert current vertex
   for (int i = 0; i< v; i++) {
@@ -175,12 +170,14 @@ bool GraphAM::Prim() const {
     }
   }
 
+  std::vector<Edge> mst;
   // Iterate until no edges left
   while(!edge_pq.empty()) {
     Edge e = edge_pq.top();
     edge_pq.pop();
     if(parent[e.v] == -1){
       parent[e.v] = e.u;
+      mst.emplace_back(e);
       for (int i = 0; i< v; i++) {
         if( g[e.v][i] != 0 && parent[i] == -1 ) {
           edge_pq.push(Edge(e.v, i, g[e.v][i]));
@@ -189,23 +186,14 @@ bool GraphAM::Prim() const {
     }
   }
 
-  std::cout << "Edges: " << '\n';
-  for(int i = 0; i < source ; i++) {
-    std::cout << parent[i]  << " --- " << i << std::endl;
-  }
-  // Do not print source --- source
-  for(int i = source + 1; i < v ; i++) {
-    std::cout << parent[i]  << " --- " << i << std::endl;
-  }
-
   for(const auto& pid: parent) {
     if(pid ==-1 ) {
       std::cout << "Point " << pid << " not  included in MST " << '\n';
-      return false;
+      return {false, std::vector<Edge>()};
     }
   }
 
-  return true;
+  return {true, mst};
 }
 
 double GraphAM::fordFulkersonRGUtil(int source, int sink) {
@@ -651,6 +639,56 @@ bool GraphAM::StronglyConnectedKosarajuUtil() {
 bool GraphAM::StronglyConnectedKosaraju() const {
   GraphAM g_am(g);
   return g_am.StronglyConnectedKosarajuUtil();
+}
+
+std::vector<Edge> GraphAM::KruskalsAlgorithm() const {
+
+  struct EdgeCompare {
+    bool operator() (const Edge e1, const Edge e2) const {
+      return e1.w > e2.w;
+    }
+  };
+
+  std::priority_queue<Edge, std::vector<Edge>, EdgeCompare> pq;
+  for(int i=-0; i<v;i++) {
+    for(int j = 0; j<v; j++){
+      if(g[i][j]!=0) {
+        pq.push(Edge(i, j, g[i][j]));
+      }
+    }
+  }
+
+  std::vector<Edge> mst;
+  // std::vector<int> parents(v, -1);
+  std::vector<std::pair<int,int>> subsets;
+  subsets.reserve(v);
+  for(int i=0; i< v; i++) {
+    subsets.emplace_back(i,0);
+  }
+
+  while(mst.size() < v-1 && !pq.empty()) {
+    auto e = pq.top();
+    pq.pop();
+    if(UnionFindRCFindUtil(e.u, subsets)!=UnionFindRCFindUtil(e.v, subsets)) {
+      mst.push_back(e);
+      UnionFindRCUnionUtil(e.u,e.v, subsets);
+    }
+  }
+  return mst;
+}
+
+std::vector<std::vector<double>> GraphAM::FloydWarshall() const {
+  std::vector<std::vector<double>> fwg = g;
+  for(int k = 0; k < v; k++) {
+    for(int i = 0; i < v; i++) {
+      for(int j = 0; j < v; j++) {
+        if(i!=j && (fwg[i][j] == 0 || fwg[i][k] + fwg[k][j] < fwg[i][j] )) {  // 0 implies no edge
+          fwg[i][j] = fwg[i][k] + fwg[k][j];
+        }
+      }
+    }
+  }
+  return fwg;
 }
 
 } // namespace graphAM

@@ -4,6 +4,18 @@
 #include <tuple>
 #include <vector>
 
+struct Edge {
+  int u, v;
+  double w;
+
+  Edge(int u, int v, double w);
+  bool operator < (const Edge& other) const;
+  bool operator <= (const Edge& other) const;
+  bool operator > (const Edge& other) const;
+  bool operator >= (const Edge& other) const;
+
+};
+
 class Graph {
 public:
 
@@ -12,7 +24,7 @@ public:
   virtual std::tuple<bool, std::vector<int>> DFS (int source , int sink) const;
 
   // Prim's algorithm only works on undirected complete graphs
-  virtual bool Prim() const;
+  virtual std::tuple<bool, std::vector<Edge>> Prim() const;
 
   // Ford Fulkerson
   virtual double fordFulkerson(int source, int sink) const;
@@ -41,6 +53,12 @@ public:
 
   // Check if graph is strongly connected
   virtual bool StronglyConnectedKosaraju() const;
+
+  // Creates minimum spanning tree for graph
+  virtual std::vector<Edge> KruskalsAlgorithm() const;
+
+  // Find minimum distance between every pair of points
+  virtual std::vector<std::vector<double>> FloydWarshall() const;
 };
 
 #endif  // GRAPH_HPP

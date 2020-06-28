@@ -3,24 +3,13 @@
 
 #include <algorithm>
 #include <random>
+#include <stack>
 #include <tuple>
 #include <vector>
 
 #include "graph.hpp"
 
 namespace graphAM {
-
-struct Edge {
-  int u, v;
-  double w;
-
-  Edge(int u, int v, double w);
-  bool operator < (const Edge& other) const;
-  bool operator <= (const Edge& other) const;
-  bool operator > (const Edge& other) const;
-  bool operator >= (const Edge& other) const;
-
-};
 
 // Double is to allow non integral weights
 // using GraphAM = std::vector<std::vector<double>>;
@@ -70,7 +59,7 @@ public:
   virtual std::tuple<bool, std::vector<int>> DFS (int source , int sink) const override;
 
   // Prim's algorithm only works on undirected complete graphs
-  virtual bool Prim() const override;
+  virtual std::tuple<bool, std::vector<Edge>> Prim() const override;
 
   // Ford Fulkerson
   virtual double fordFulkerson(int source, int sink) const override;
@@ -99,6 +88,12 @@ public:
 
   // Check if graph is strongly connected
   virtual bool StronglyConnectedKosaraju() const override;
+
+  // Creates minimum spanning tree for graph
+  virtual std::vector<Edge> KruskalsAlgorithm() const override;
+
+  // Find minimum distance between every pair of points
+  virtual std::vector<std::vector<double>> FloydWarshall() const override;
 };
 
 /* ------------------------------- */

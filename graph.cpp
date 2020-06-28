@@ -2,6 +2,25 @@
 
 #include "graph.hpp"
 
+Edge::Edge(int u, int v, double w) {
+  this->u = u;
+  this->v = v;
+  this->w = w;
+}
+
+bool Edge::operator < (const Edge& other) const {
+  return w < other.w;
+}
+bool Edge::operator <= (const Edge& other) const {
+  return w <= other.w;
+}
+bool Edge::operator > (const Edge& other) const {
+  return w > other.w;
+}
+bool Edge::operator >= (const Edge& other) const {
+  return w >= other.w;
+}
+
 void Graph::PrintGraph() const {
   std::cout << __FUNCTION__ << " not yet defined" << '\n';
 }
@@ -16,9 +35,9 @@ std::tuple<bool, std::vector<int>> Graph::DFS (int source , int sink) const {
 }
 
 // Prim's algorithm only works on undirected complete graphs
-bool Graph::Prim() const {
+std::tuple<bool, std::vector<Edge>> Graph::Prim() const {
   std::cout << __FUNCTION__ << " not yet defined" << '\n';
-  return false;
+  return {false, std::vector<Edge>()};
 }
 
 // Ford Fulkerson
@@ -78,3 +97,15 @@ bool Graph::StronglyConnectedKosaraju() const {
   std::cout << __FUNCTION__ << " not yet defined" << '\n';
    return false;
 }
+
+// Creates minimum spanning tree for graph
+std::vector<Edge> Graph::KruskalsAlgorithm() const {
+  std::cout << __FUNCTION__ << " not yet defined" << '\n';
+  return std::vector<Edge>();
+}
+
+// Find minimum distance between every pair of points
+std::vector<std::vector<double>> Graph::FloydWarshall() const {
+  std::cout << __FUNCTION__ << " not yet defined" << '\n';
+  return std::vector<std::vector<double>>();
+ }
