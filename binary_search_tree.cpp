@@ -60,7 +60,6 @@ std::shared_ptr<binary_tree::Node> constructTreeFromPreOrderUtilStack_N(const st
 
   int pre_index = 0;
   std::stack<std::shared_ptr<binary_tree::Node>> node_stack;
-  std::cout << "main creating tree node with value " << pre_order[pre_index] << '\n';
   std::shared_ptr<binary_tree::Node> root = std::make_shared<binary_tree::Node>(pre_order[pre_index]);
   node_stack.push(root);
   pre_index++;
@@ -71,12 +70,10 @@ std::shared_ptr<binary_tree::Node> constructTreeFromPreOrderUtilStack_N(const st
       node_stack.pop();
     }
     if(node!=nullptr) {
-      std::cout << "right creating tree node with value " << pre_order[pre_index] << '\n';
       node->right_ = std::make_shared<binary_tree::Node>(pre_order[pre_index]);
       node_stack.push(node->right_);
     } else {
       node = node_stack.top();
-      std::cout << "left creating tree node with value " << pre_order[pre_index] << '\n';
       node->left_ = std::make_shared<binary_tree::Node>(pre_order[pre_index]);
       node_stack.push(node->left_);
     }
@@ -108,6 +105,39 @@ std::shared_ptr<binary_tree::Node> findLowestCommonAncestor(const std::shared_pt
     std::cout << __FUNCTION__ << " | " << "Lowest common ancestor has value: " << node->value_ << '\n';
   }
   return node;
+}
+
+std::shared_ptr<binary_tree::Node> insertIntoBST(std::shared_ptr<binary_tree::Node> node, const double value) {
+  if(node == nullptr) {
+    node = std::make_shared<binary_tree::Node>(value);
+    return node;
+  }
+
+  if(value > node->value_) {
+    std::cout << "Going right at value: " << node->value_ << '\n';
+    node->right_ = insertIntoBST(node->right_, value);
+  } else if (value < node->value_) {
+    std::cout << "Going left at value: " << node->value_ << '\n';
+    node->left_ = insertIntoBST(node->left_, value);
+  } else {
+    std::cout << __FUNCTION__ << " | " << "No duplicates allowed. " << value \
+      << " not inserted into tree" << '\n';
+  }
+
+  return node;
+}
+
+std::tuple<bool, std::shared_ptr<binary_tree::Node>> findInBST(std::shared_ptr<binary_tree::Node> node, const double value) {
+  if(node == nullptr) {
+    return {false, nullptr};
+  } else if(value == node->value_) {
+    return {true, node};
+  } else if (value > node->value_) {
+    return findInBST(node->right_, value);
+  } else if (value < node->value_) {  // Kept the condition out of completeness
+    return findInBST(node->left_, value);
+  }
+  return {false, nullptr};
 }
 
 }; // namespace binary_search_tree
