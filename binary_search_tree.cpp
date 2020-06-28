@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stack>
 
 #include "binary_search_tree.hpp"
 
@@ -52,10 +53,42 @@ std::shared_ptr<binary_tree::Node> constructTreeFromPreOrderUtil_N(
   return node;
 }
 
+// max is the value of the node above
+std::shared_ptr<binary_tree::Node> constructTreeFromPreOrderUtilStack_N(const std::vector<double>& pre_order) {
+  int s = pre_order.size();
+  if(s==0) return nullptr;
+
+  int pre_index = 0;
+  std::stack<std::shared_ptr<binary_tree::Node>> node_stack;
+  std::cout << "main creating tree node with value " << pre_order[pre_index] << '\n';
+  std::shared_ptr<binary_tree::Node> root = std::make_shared<binary_tree::Node>(pre_order[pre_index]);
+  node_stack.push(root);
+  pre_index++;
+  while(pre_index < s) {
+    std::shared_ptr<binary_tree::Node> node = nullptr;
+    while(!node_stack.empty() && node_stack.top()->value_ <= pre_order[pre_index]) {
+      node = node_stack.top();
+      node_stack.pop();
+    }
+    if(node!=nullptr) {
+      std::cout << "right creating tree node with value " << pre_order[pre_index] << '\n';
+      node->right_ = std::make_shared<binary_tree::Node>(pre_order[pre_index]);
+      node_stack.push(node->right_);
+    } else {
+      node = node_stack.top();
+      std::cout << "left creating tree node with value " << pre_order[pre_index] << '\n';
+      node->left_ = std::make_shared<binary_tree::Node>(pre_order[pre_index]);
+      node_stack.push(node->left_);
+    }
+    pre_index++;
+  }
+  return root;
+}
+
 std::shared_ptr<binary_tree::Node> constructTreeFromPreOrder(const std::vector<double>& pre_order) {
   const int s = pre_order.size();
   int pre_index = 0;
-  return constructTreeFromPreOrderUtil_N(pre_order, std::numeric_limits<double>::min(), std::numeric_limits<double>::max(), pre_index);
+  return constructTreeFromPreOrderUtilStack_N(pre_order);
 }
 
 std::shared_ptr<binary_tree::Node> findLowestCommonAncestorUtil(const std::shared_ptr<binary_tree::Node>& node, double v1, double v2) {
