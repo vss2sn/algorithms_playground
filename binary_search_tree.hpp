@@ -12,6 +12,7 @@ std::shared_ptr<binary_tree::Node> constructTreeFromPreOrder(const std::vector<d
 
 std::shared_ptr<binary_tree::Node> insertIntoBST(std::shared_ptr<binary_tree::Node> node, const double value);
 std::tuple<bool, std::shared_ptr<binary_tree::Node>> findInBST(std::shared_ptr<binary_tree::Node> node, const double value);
+bool deleteFromBST(std::shared_ptr<binary_tree::Node>& node, const double value);
 
 std::shared_ptr<binary_tree::Node> findLowestCommonAncestorUtil(const std::shared_ptr<binary_tree::Node>& node, double v1, double v2);
 std::shared_ptr<binary_tree::Node> findLowestCommonAncestor(const std::shared_ptr<binary_tree::Node>& node, double v1, double v2);

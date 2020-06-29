@@ -140,6 +140,32 @@ std::tuple<bool, std::shared_ptr<binary_tree::Node>> findInBST(std::shared_ptr<b
   return {false, nullptr};
 }
 
+bool deleteFromBST(std::shared_ptr<binary_tree::Node>& node, const double value) {
+  if(node == nullptr) {
+    return false;
+  }
+  if(value == node->value_) {
+    if(node->right_!=nullptr && node->right_->left_==nullptr) {
+      auto temp = node->left_;
+      node = node->right_;
+      node->left_ = temp;
+    } else if (node->right_ == nullptr){
+      node = node->left_;
+    } else {
+      auto temp = node->right_;
+      node = node->left_;
+      while(node->right_ != nullptr) node = node->right_;
+      node->right_ = temp;
+    }
+    return true;
+  } else if (value > node->value_) {
+    return deleteFromBST(node->right_, value);
+  } else if (value < node->value_) {  // Kept the condition out of completeness
+    return deleteFromBST(node->left_, value);
+  }
+  return false;
+}
+
 }; // namespace binary_search_tree
 
 //
