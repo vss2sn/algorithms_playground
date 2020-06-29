@@ -79,16 +79,77 @@ void InsertionSortWithBinarySearch(std::vector<T>& to_sort) {
 	}
 }
 
+template<typename T>
+void MergeSortMergeUtil(std::vector<T>& to_sort, int begin, int mid, int end) {
+	int i = 0, j = 0, k = begin;
 
+	// NOTE: the constructor is vector v[a, b); b not inclusive
+	std::vector<T> left(to_sort.begin() + begin, to_sort.begin() + mid + 1);
+	std::vector<T> right(to_sort.begin() + mid + 1, to_sort.begin() + end + 1);
 
-//int main() {
-//	std::vector<int> to_sort{10,8,9,3,5,6,1,4,2,7};
-//	BubbleSort(to_sort);
-//	InsertionSort(to_sort);
-//	InsertionSortWithBinarySearch(to_sort);
-//	for(const auto& ele : to_sort) {
-//		std::cout << ele << ' ';
-//	}
-//	std::cout << '\n';
-//	return 0;
-//}
+	while(i < left.size() && j < right.size()) {
+		if(left[i] < right[j]) {
+			to_sort[k] = left[i];
+			i++;
+		} else {
+			to_sort[k] = right[j];
+			j++;
+		}
+		k++;
+	}
+	while(j < right.size()) {
+		to_sort[k] = right[j];
+		j++;
+		k++;
+	}
+	while(i < left.size()) {
+		to_sort[k] = left[i];
+		i++;
+		k++;
+	}
+}
+
+template<typename T>
+void MergeSortUtil(std::vector<T>& to_sort, int begin, int end) {
+	if(begin < end) {
+		int mid = begin + (end - begin)/2;
+		MergeSortUtil(to_sort, begin, mid);
+		MergeSortUtil(to_sort, mid+1, end);
+		MergeSortMergeUtil(to_sort, begin, mid, end);
+	}
+}
+
+template<typename T>
+void MergeSort(std::vector<T>& to_sort) {
+	int v = to_sort.size();
+	MergeSortUtil(to_sort, 0, v-1);
+}
+
+template<typename T>
+int QuickSortPartition(std::vector<T>& to_sort, int start, int end) {
+	T pivot = to_sort[end];
+	int i = start;
+	for(int j = start; j < end; j++) {
+		if(to_sort[j] < pivot) {
+			std::swap(to_sort[i], to_sort[j]);
+			i++;
+		}
+	}
+	std::swap(to_sort[end], to_sort[i]);
+	return i;
+}
+
+template<typename T>
+void QuickSortUtil(std::vector<T>& to_sort, int start, int end) {
+	if(start < end) {
+		int p = QuickSortPartition(to_sort, start, end);
+		QuickSortUtil(to_sort, start, p-1);
+		QuickSortUtil(to_sort, p+1, end);
+	}
+}
+
+template<typename T>
+void QuickSort(std::vector<T>& to_sort) {
+	int v = to_sort.size();
+	QuickSortUtil(to_sort, 0, v-1);
+}
