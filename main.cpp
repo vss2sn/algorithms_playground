@@ -14,7 +14,8 @@ int main() {
 	// BubbleSort(to_sort);
 	// InsertionSort(to_sort);
 	// InsertionSortWithBinarySearch(to_sort);
-	QuickSort(to_sort);
+	// QuickSort(to_sort);
+	SelectionSort(to_sort);
 	for(const auto& ele : to_sort) {
 		std::cout << ele << ' ';
 	}

@@ -153,3 +153,17 @@ void QuickSort(std::vector<T>& to_sort) {
 	int v = to_sort.size();
 	QuickSortUtil(to_sort, 0, v-1);
 }
+
+template<typename T>
+void SelectionSort(std::vector<T>& to_sort) {
+  int v = to_sort.size();
+  for(int i = 0; i < v - 1; i++) {
+    int min_index = i;
+    for(int j = i+1; j < v; j++) {
+      if(to_sort[min_index] > to_sort[j]) {
+        min_index = j;
+      }
+    }
+		std::swap(to_sort[min_index], to_sort[i]);
+  }
+}
