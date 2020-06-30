@@ -17,6 +17,7 @@ bool deleteFromBST(std::shared_ptr<binary_tree::Node>& node, const double value)
 std::shared_ptr<binary_tree::Node> findLowestCommonAncestorUtil(const std::shared_ptr<binary_tree::Node>& node, double v1, double v2);
 std::shared_ptr<binary_tree::Node> findLowestCommonAncestor(const std::shared_ptr<binary_tree::Node>& node, double v1, double v2);
 
+std::tuple<bool, std::vector<std::pair<double, double>>> checkPairSumBST(const std::shared_ptr<binary_tree::Node> node, const double value);
 }; // namespace binary_search_tree
 
 #endif  // BINARY_SEARCH_TREE_HPP

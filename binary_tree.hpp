@@ -18,6 +18,12 @@ void inOrder(const std::shared_ptr<Node>& node);
 void postOrder(const std::shared_ptr<Node>& node);
 void preOrder(const std::shared_ptr<Node>& node);
 
+template<typename T>
+void getInOrderUtil(const std::shared_ptr<Node>& node, T& in_order);
+
+template<typename T>
+T getInOrder(const std::shared_ptr<Node>& node);
+
 std::shared_ptr<Node> constructBinaryTreeFromPreIn(const std::vector<double>& pre_trav, const std::vector<double>& in_trav, const int start, const int end);
 std::shared_ptr<Node> constructBinaryTreeFromInPost(const std::vector<double>& in_trav, const std::vector<double>& post_trav, const int start, const int end);
 
@@ -40,6 +46,21 @@ template<typename T>
 std::shared_ptr<Node> generateRandomFullBinaryTree(const int max_depth, T& dist);
 
 // Templated function definitions:
+
+template<typename T>
+void getInOrderUtil(const std::shared_ptr<Node>& node, T& in_order) {
+  if(node==nullptr) return;
+  getInOrderUtil(node->left_, in_order);
+  in_order.insert(in_order.end(), node->value_);
+  getInOrderUtil(node->right_, in_order);
+}
+
+template<typename T>
+T getInOrder(const std::shared_ptr<Node>& node) {
+  T in_order;
+  getInOrderUtil(node, in_order);
+  return in_order;
+}
 
 template <typename T>
 std::shared_ptr<Node> generateRandomFullBinaryTreeUtil(const int max_depth, T& dist, std::mt19937& gen, double& random_null_thresh) {

@@ -166,6 +166,32 @@ bool deleteFromBST(std::shared_ptr<binary_tree::Node>& node, const double value)
   return false;
 }
 
+std::tuple<bool, std::vector<std::pair<double, double>>> checkPairSumBST(const std::shared_ptr<binary_tree::Node> node, const double value) {
+    std::vector<double> in_order = binary_tree::getInOrder<std::vector<double>>(node);
+    int v = in_order.size();
+    std::vector<std::pair<double, double>> pairs;
+    if(v==0) return {false, pairs};
+
+    int i = 0, j = v-1;
+    while( i < v && j >= 0) {
+      double sum = in_order[i] + in_order[j];
+      if(sum > value) {
+        j--;
+      } else if (sum < value) {
+        i++;
+      } else {
+        pairs.emplace_back(std::make_pair(in_order[i], in_order[j]));
+        i++;
+        j--;
+      }
+    }
+    if(!pairs.empty()) {
+      return {true, pairs};
+    } else {
+      return {false, pairs};
+    }
+}
+
 }; // namespace binary_search_tree
 
 //
