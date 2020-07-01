@@ -2,6 +2,8 @@
 #include <iostream>
 #include <vector>
 
+namespace sort {
+
 template<typename T>
 void BubbleSort(std::vector<T>& to_sort) {
 	int v = to_sort.size();
@@ -25,11 +27,6 @@ void InsertionSort(std::vector<T>& to_sort) {
 	for (int i=1; i< v; i++) {
 		T key = to_sort[i];
 		int j = i-1;
-		// use std copy backward?
-		// while(j >=0 && to_sort[j] > key) {
-		// 	j--;
-		// }
-		// std::copy_backward(&to_sort[j+1], &to_sort[i], &to_sort[i+1]);
 		while (j >= 0 && to_sort[j] > key) {
 			to_sort[j+1] = to_sort[j];
 			j--;
@@ -37,6 +34,41 @@ void InsertionSort(std::vector<T>& to_sort) {
 		to_sort[j+1] = key;
 	}
 }
+
+// Playing with STL
+template<typename T>
+void InsertionSortWithCb(std::vector<T>& to_sort) {
+	int v = to_sort.size();
+
+	for (int i=1; i< v; i++) {
+		T key = to_sort[i];
+		int j = i-1;
+		while(j >=0 && to_sort[j] > key) {
+			j--;
+		}
+		std::copy_backward(&to_sort[j+1], &to_sort[i], &to_sort[i+1]);
+		to_sort[j+1] = key;
+	}
+}
+
+// Playing with STL
+template<typename T>
+void InsertionSortWithRiCb(std::vector<T>& to_sort) {
+	int v = to_sort.size();
+
+	for (int i=1; i< v; i++) {
+		T key = to_sort[i];
+		int j = std::distance(
+			std::find_if(to_sort.rbegin() + v-i, to_sort.rend(), [&](T temp){return temp <= key;}),
+			to_sort.rend()
+		);
+		if(j+1 <= i) {
+			std::copy_backward(&to_sort[j], &to_sort[i], &to_sort[i+1]);
+			to_sort[j] = key;
+		}
+	}
+}
+
 
 template<typename T>
 int BinarySearchUtil(const std::vector<T>& to_search, T key, int begin, int end) {
@@ -60,8 +92,6 @@ int BinarySearchUtil(const std::vector<T>& to_search, T key, int begin, int end)
 
 template<typename T>
 void InsertionSortWithBinarySearch(std::vector<T>& to_sort) {
-
-
 	int v = to_sort.size();
 
 	for(int i = 1; i < v; i++) {
@@ -69,12 +99,24 @@ void InsertionSortWithBinarySearch(std::vector<T>& to_sort) {
 		T key = to_sort[i];
 		int loc = BinarySearchUtil(to_sort, key, 0, j);
 
-		// use std copy backaward
-		//std::copy_backward(&to_sort[loc], &to_sort[i], &to_sort[i+1]);
 		while(j >= loc) {
 			to_sort[j+1] = to_sort[j];
 			j--;
 		}
+		to_sort[loc] = key;
+	}
+}
+
+// Playing with STL
+template<typename T>
+void InsertionSortWithBinarySearchWithCb(std::vector<T>& to_sort) {
+	int v = to_sort.size();
+
+	for(int i = 1; i < v; i++) {
+		int j = i-1;
+		T key = to_sort[i];
+		int loc = BinarySearchUtil(to_sort, key, 0, j);
+		std::copy_backward(&to_sort[loc], &to_sort[i], &to_sort[i+1]);
 		to_sort[loc] = key;
 	}
 }
@@ -167,3 +209,50 @@ void SelectionSort(std::vector<T>& to_sort) {
 		std::swap(to_sort[min_index], to_sort[i]);
   }
 }
+
+}  // namespace sort
+
+// int main() {
+//
+//   int size = 10000;
+// 	std::vector<int> to_sort(size);
+//   std::random_device rd;
+//   std::mt19937 gen(rd());
+//   std::uniform_real_distribution<> dist(0, size);
+//
+//   for(int j = 0; j < 1000; j++) {
+//     std::cout << "Iteration: " << j << '\n';
+//     std::generate(to_sort.begin(), to_sort.end(), [&](){return dist(gen);});
+//     auto backup = to_sort;
+//
+//     // for(const auto& ele : to_sort) {
+//     //   std::cout << ele << ' ';
+//     // }
+//     // std::cout << '\n';
+//
+//     // sort::BubbleSort(to_sort);
+//     // sort::InsertionSort(to_sort);
+//     // sort::InsertionSortWithCb(to_sort);
+//     // sort::InsertionSortWithRiCb(to_sort);
+//     sort::InsertionSortWithBinarySearch(to_sort);
+//     // sort::MergeSort(to_sort);
+//     // sort::QuickSort(to_sort);
+//     // sort::SelectionSort(to_sort);
+//     std::sort(backup.begin(), backup.end());
+//     for(int i=0; i< size; i++) {
+//       if(to_sort[i] != backup[i]) {
+//         std::cout << "Problem" << '\n';
+//         for(const auto& ele : to_sort) {
+//           std::cout << ele << ' ';
+//         }
+//         std::cout << '\n';
+//         return 0;
+//       }
+//     }
+//     // for(const auto& ele : to_sort) {
+//     // 	std::cout << ele << ' ';
+//     // }
+//     // std::cout << '\n';
+//   }
+//   return 0;
+// }

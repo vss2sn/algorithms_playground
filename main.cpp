@@ -12,10 +12,18 @@
 int main() {
 	std::vector<int> to_sort{10,8,9,3,5,6,1,4,2,7};
 	// BubbleSort(to_sort);
+
 	// InsertionSort(to_sort);
+  // InsertionSortWithCb(to_sort);
+  // InsertionSortWithRiCb(to_sort);
 	// InsertionSortWithBinarySearch(to_sort);
-	// QuickSort(to_sort);
-	SelectionSort(to_sort);
+  // InsertionSortWithBinarySearchWithCb(to_sort);
+
+  // MergeSort(to_sort);
+
+  // QuickSort(to_sort);
+
+  SelectionSort(to_sort);
 	for(const auto& ele : to_sort) {
 		std::cout << ele << ' ';
 	}
