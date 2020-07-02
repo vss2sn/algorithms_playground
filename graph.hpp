@@ -59,6 +59,9 @@ public:
 
   // Find minimum distance between every pair of points
   virtual std::vector<std::vector<double>> FloydWarshall() const;
+
+  // Detect negative cycle
+  virtual bool BellmanFord(const int source) const;
 };
 
 #endif  // GRAPH_HPP

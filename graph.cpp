@@ -109,3 +109,9 @@ std::vector<std::vector<double>> Graph::FloydWarshall() const {
   std::cout << __FUNCTION__ << " not yet defined" << '\n';
   return std::vector<std::vector<double>>();
  }
+
+ // Detect negative cycle
+ bool Graph::BellmanFord(const int source) const {
+   std::cout << __FUNCTION__ << " not yet defined" << '\n';
+   return false;
+}

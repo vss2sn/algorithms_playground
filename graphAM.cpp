@@ -691,6 +691,45 @@ std::vector<std::vector<double>> GraphAM::FloydWarshall() const {
   return fwg;
 }
 
+// TODO: To test
+bool GraphAM::BellmanFord(const int source) const {
+  std::vector<int> parents(v, -1);
+  std::vector<double> distance(v, std::numeric_limits<double>::max());
+  distance[source] = 0;
+  // NOTE: As of now a weight of 0 implies no edge exists between 2 points
+  // Converting the graph to std::numeric_limits<double>::max() to represent
+  // no edge and accepting 0 as a possible edge weight for this algorithm
+  auto g_with_negative = g;
+  for(int j = 0; j < v; j++) {
+    for(int k = 0; k < v; k++) {
+      g_with_negative[j][k] = g[j][k];
+      if(!g_with_negative[j][k]) {
+        g_with_negative[j][k] = std::numeric_limits<double>::max();
+      }
+    }
+  }
+
+  for(int i = 0; i < v-1; i++) {
+    for(int j = 0; j < v; j++) {
+      for(int k = 0; k < v; k++) {
+        if(distance[k] > distance[j] + g_with_negative[j][k]) {
+          distance[k] =  distance[j] + g_with_negative[j][k];
+          parents[k] = j;
+        }
+      }
+    }
+  }
+
+  for(int j = 0; j < v; j++) {
+    for(int k = 0; k < v; k++) {
+      if(distance[k] > distance[j] + g_with_negative[j][k]) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 } // namespace graphAM
 
 
