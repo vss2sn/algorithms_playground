@@ -263,6 +263,40 @@ void CountingSort(std::vector<T>& to_sort) {
 	std::copy(output.begin(), output.end(), to_sort.begin());
 }
 
+template<typename T>
+void HeapSortUtilHeapify(std::vector<T>& to_sort, const int n, const int i) {
+	int largest = i;
+	const int l = 2*i+1;
+	const int r = 2*i+2;
+
+	if(l < n && to_sort[l] > to_sort[largest]) {
+		largest = l;
+	}
+
+	if(r < n && to_sort[r] > to_sort[largest]) {
+		largest = r;
+	}
+
+	if(largest != i) {
+		std::swap(to_sort[largest], to_sort[i]);
+		HeapSortUtilHeapify(to_sort, n, largest);
+	}
+}
+
+template<typename T>
+void HeapSort(std::vector<T>& to_sort) {
+	int v = to_sort.size();
+
+	for(int i = v/2-1; i >= 0; i--){
+		HeapSortUtilHeapify(to_sort, v, i);
+	}
+
+	for(int i = v-1; i >0; i--) {
+		std::swap(to_sort[0], to_sort[i]);
+		HeapSortUtilHeapify(to_sort, i, 0);
+	}
+}
+
 }  // namespace sort
 
 // int main() {
@@ -292,7 +326,8 @@ void CountingSort(std::vector<T>& to_sort) {
 //     // sort::QuickSort(to_sort);
 //     // sort::SelectionSort(to_sort);
 //     // sort::BucketSort(to_sort);
-//     sort::CountingSort(to_sort);
+// 		 // sort::CountingSort(to_sort);
+//     // sort::HeapSort(to_sort);
 //     std::sort(backup.begin(), backup.end());
 //     for(int i=0; i< size; i++) {
 //       if(to_sort[i] != backup[i]) {

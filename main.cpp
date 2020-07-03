@@ -27,7 +27,9 @@ int main() {
 
 	// sort::BucketSort(to_sort);
 
-	sort::CountingSort(to_sort);
+	// sort::CountingSort(to_sort);
+
+	sort::HeapSort(to_sort);
 
 	for(const auto& ele : to_sort) {
 		std::cout << ele << ' ';
