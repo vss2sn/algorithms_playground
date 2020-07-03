@@ -210,6 +210,59 @@ void SelectionSort(std::vector<T>& to_sort) {
   }
 }
 
+// Only valid for positive values
+template <typename T>
+void BucketSort(std::vector<T>& to_sort, const int n = 10) {
+	if(n <= 0) {
+		std::cout << "Please set n >= 1" << '\n';
+		return;
+	}
+	int v = to_sort.size();
+	std::vector<std::shared_ptr<std::vector<T>>> buckets(n);
+	T key = *std::max_element(to_sort.begin(), to_sort.end());
+	const double mp = (static_cast<double>(n)) / (key+1); // if key ==0 and key == n
+	for(int i = 0; i<n; i++) {
+		buckets[i] = std::make_shared<std::vector<T>>();
+	}
+	for(const auto& ele : to_sort) {
+		buckets[std::floor(ele * mp)]->push_back(ele);
+	}
+	auto it = to_sort.begin();
+	for(const auto& bucket : buckets) {
+		// std::sort(bucket->begin(), bucket->end());
+		QuickSort(*bucket);
+		std::copy(bucket->begin(), bucket->end(), it);
+		std::advance(it, bucket->size());
+	}
+}
+
+template<typename T>
+void CountingSort(std::vector<T>& to_sort) {
+	const int v = to_sort.size();
+
+	const T max = *std::max_element(to_sort.begin(), to_sort.end());
+	const T min = *std::min_element(to_sort.begin(), to_sort.end());
+
+	const int range = max - min + 1;
+
+	std::vector<int> count(range, 0);
+	for(const auto& ele:to_sort) {
+		count[ele - min]++;
+	}
+
+	for(int i = 1; i < range; i++) {
+		count[i]+=count[i-1];
+	}
+
+	std::vector<T> output(v);
+	for(int i = v - 1; i >= 0; i--) {
+		output[count[to_sort[i]-min]-1] = to_sort[i];
+		count[to_sort[i]-min]--;
+	}
+
+	std::copy(output.begin(), output.end(), to_sort.begin());
+}
+
 }  // namespace sort
 
 // int main() {
@@ -234,10 +287,12 @@ void SelectionSort(std::vector<T>& to_sort) {
 //     // sort::InsertionSort(to_sort);
 //     // sort::InsertionSortWithCb(to_sort);
 //     // sort::InsertionSortWithRiCb(to_sort);
-//     sort::InsertionSortWithBinarySearch(to_sort);
+//     // sort::InsertionSortWithBinarySearch(to_sort);
 //     // sort::MergeSort(to_sort);
 //     // sort::QuickSort(to_sort);
 //     // sort::SelectionSort(to_sort);
+//     // sort::BucketSort(to_sort);
+//     sort::CountingSort(to_sort);
 //     std::sort(backup.begin(), backup.end());
 //     for(int i=0; i< size; i++) {
 //       if(to_sort[i] != backup[i]) {
