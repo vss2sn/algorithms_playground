@@ -27,10 +27,10 @@ private:
   //
   int UnionFindFindUtil(const int v, const std::vector<int>& parent) const;
   void UnionFindUnionUtil(int v1, int v2, std::vector<int>& parent) const;
-  //
-  // int UnionFindRCFindUtil(int v, std::vector<std::pair<int, int>>& subsets) const;
-  // void UnionFindRCUnionUtil(int v1, int v2, std::vector<std::pair<int, int>>& subsets) const;
-  //
+
+  int UnionFindRCFindUtil(int v, std::vector<std::pair<int, int>>& subsets) const;
+  void UnionFindRCUnionUtil(int v1, int v2, std::vector<std::pair<int, int>>& subsets) const;
+
   // void DFSUtil(const int source, std::vector<bool>& visited) const;
   //
   // bool colourGraphUtil(const int vert, const int n_c, std::vector<int>& colour) const;
@@ -62,7 +62,7 @@ public:
 //
   // Union Find Algorithms
   virtual bool UnionFindDetectCycle() const override;
-//   virtual bool UnionFindRCDetectCycle() const override;
+  virtual bool UnionFindRCDetectCycle() const override;
 //
 //   // Find mother Vertex
 //   virtual std::tuple<bool, int> FindMotherVertex () const override;

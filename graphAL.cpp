@@ -220,6 +220,50 @@ std::vector<Edge> GraphAL::KruskalsAlgorithm() const {
   return mst;
 }
 
+int GraphAL::UnionFindRCFindUtil(int v, std::vector<std::pair<int, int>>& subsets) const{
+  if(v != subsets[v].first) {
+    subsets[v].first = UnionFindRCFindUtil(subsets[v].first, subsets);
+  }
+  return subsets[v].first;
+}
+
+void GraphAL::UnionFindRCUnionUtil(int v1, int v2, std::vector<std::pair<int, int>>& subsets) const {
+  int p1 = UnionFindRCFindUtil(v1, subsets);
+  int p2 = UnionFindRCFindUtil(v2, subsets);
+
+  if(subsets[p1].second > subsets[p2].second) {
+    subsets[p2].first = p1;
+  } else if(subsets[p1].second < subsets[p1].second) {
+    subsets[p1].first = p2;
+  } else {
+    subsets[p2].first = p1;
+    subsets[p1].second++;
+  }
+}
+
+bool GraphAL::UnionFindRCDetectCycle() const {
+  std::vector<std::pair<int, int>> subsets(v);
+  for(int i=0; i < v; i++) {
+    subsets.emplace_back(std::make_pair(i, 0));
+  }
+
+  for(int start_vert = 0; start_vert < v; start_vert) {
+    int v1 = UnionFindRCFindUtil(start_vert, subsets);
+    for(const auto& [end_vert, weights] : g[start_vert]) {
+      int v2 = UnionFindRCFindUtil(end_vert, subsets);
+      if(v1 == v2) {
+        std::cout << __FUNCTION__ << " | " <<  " Cycle detected" << '\n';
+        std::cout << __FUNCTION__ << " | " <<  " Edge vertices " << start_vert << ' ' << end_vert << '\n';
+        std::cout << __FUNCTION__ << " | " <<  " Common vertex " <<  v1 << '\n';
+        return true;
+      } else {
+        UnionFindRCUnionUtil(v1, v2, subsets);
+      }
+    }
+  }
+  return false;
+}
+
 } // namespace grahAL
 
 
@@ -254,9 +298,18 @@ int main() {
   // } else {
   //   std::cout << "MST not found" << '\n';
   // }
-  auto mst = g_al.KruskalsAlgorithm();
-  std::cout << "MST:" << '\n';
-  for(const auto& e : mst) {
-    std::cout << e.u << " --- " << e.v << '\n';
+  // auto mst = g_al.KruskalsAlgorithm();
+  // std::cout << "MST:" << '\n';
+  // for(const auto& e : mst) {
+  //   std::cout << e.u << " --- " << e.v << '\n';
+  // }
+
+  auto cycle_found = g_al.UnionFindDetectCycle();
+  if(cycle_found) {
+    std::cout << "Cycle found" << '\n';
+  }else {
+    std::cout << "Cycle not found" << '\n';
   }
+
+  return 0;
 }
