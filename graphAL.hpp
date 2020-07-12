@@ -25,8 +25,8 @@ private:
   //
   // double fordFulkersonRGUtil(int source, int sink);
   //
-  // int UnionFindFindUtil(const int v, const std::vector<int>& parent) const;
-  // void UnionFindUnionUtil(int v1, int v2, std::vector<int>& parent) const;
+  int UnionFindFindUtil(const int v, const std::vector<int>& parent) const;
+  void UnionFindUnionUtil(int v1, int v2, std::vector<int>& parent) const;
   //
   // int UnionFindRCFindUtil(int v, std::vector<std::pair<int, int>>& subsets) const;
   // void UnionFindRCUnionUtil(int v1, int v2, std::vector<std::pair<int, int>>& subsets) const;
@@ -53,15 +53,15 @@ public:
   virtual void PrintGraph() const override;
   virtual std::tuple<bool, std::vector<int>> BFS (int source , int sink) const override;
   virtual std::tuple<bool, std::vector<int>> DFS (int source , int sink) const override;
-//
-//   // Prim's algorithm only works on undirected complete graphs
-//   virtual std::tuple<bool, std::vector<Edge>> Prim() const override;
-//
+
+  // Prim's algorithm only works on undirected complete graphs
+  virtual std::tuple<bool, std::vector<Edge>> Prim() const override;
+
 //   // Ford Fulkerson
 //   virtual double fordFulkerson(int source, int sink) const override;
 //
-//   // Union Find Algorithms
-//   virtual bool UnionFindDetectCycle() const override;
+  // Union Find Algorithms
+  virtual bool UnionFindDetectCycle() const override;
 //   virtual bool UnionFindRCDetectCycle() const override;
 //
 //   // Find mother Vertex
@@ -85,8 +85,8 @@ public:
 //   // Check if graph is strongly connected
 //   virtual bool StronglyConnectedKosaraju() const override;
 //
-//   // Creates minimum spanning tree for graph
-//   virtual std::vector<Edge> KruskalsAlgorithm() const override;
+  // Creates minimum spanning tree for graph
+  virtual std::vector<Edge> KruskalsAlgorithm() const override;
 //
 //   // Find minimum distance between every pair of points
 //   virtual std::vector<std::vector<double>> FloydWarshall() const override;
