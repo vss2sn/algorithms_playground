@@ -329,6 +329,117 @@ std::tuple<bool, int> GraphAL::FindMotherVertex () const {
   return {true, mv};
 }
 
+std::tuple<bool, double, std::vector<int>> GraphAL::Dijkstra(const int source, const int sink) const {
+  // point, min distance
+  std::vector<std::pair<int, double>> p_md(v, std::make_pair(-1, std::numeric_limits<double>::max())); // parent, min distance
+  struct PairSortSecond {
+    bool operator () (const std::pair<int, double>& p1, const std::pair<int, double>& p2) {
+      return p1.second > p2.second;
+    }
+  };
+
+  std::priority_queue<std::pair<int, double>, std::vector<std::pair<int, double>>, PairSortSecond> pq;
+
+  p_md[source].second = 0;
+  pq.push(std::make_pair(source,0));
+
+  bool found_path = false;
+  while(!pq.empty()) {
+    const auto [current_vert, current_cost] = pq.top();
+    pq.pop();
+    if(current_vert == sink) {
+      found_path = true;
+      break;
+    }
+    if(p_md[current_vert].first == -1) {
+      for(const auto& [end_vert, weight] : g[current_vert]) {
+        if(double cost = current_cost + weight; cost < p_md[end_vert].second) {
+          pq.push(std::make_pair(end_vert, cost));
+          p_md[end_vert] = std::make_pair(current_vert, cost);
+        }
+      }
+    }
+  }
+  if(found_path == false) {
+    std::cout << __FUNCTION__ << "Path not found between " << source << ' ' << sink << '\n';
+    return {false, -1, std::vector<int>()};
+  } else {
+    int cv = sink;
+    double path_cost = 0;
+    std::vector<int> path;
+    while(cv!=source) {
+      path.push_back(cv);
+      cv = p_md[cv].first;
+      path_cost += p_md[cv].second;
+    }
+    path.push_back(source);
+    std::reverse(path.begin(), path.end());
+    std::cout << __FUNCTION__ << "Path found between " << source << ' ' << sink << '\n';
+    return {found_path, path_cost, path};
+  }
+}
+
+void GraphAL::PrintAllDijkstraPathsFound(const int source, const std::vector<std::pair<int, double>>& p_md) const {
+  for(int i = 0; i < p_md.size(); i++) {
+    if(p_md[i].first != -1) {
+      std::vector<int> path;
+      path.push_back(i);
+      std::cout << __FUNCTION__ <<  " | " << "Path: ";
+      int cv = p_md[i].first;
+      while(cv != source) {
+        path.push_back(cv);
+        cv = p_md[cv].first;
+      }
+      path.push_back(source);
+      std::reverse(path.begin(), path.end());
+      for(const auto& ele : path) {
+        std::cout << ele << ' ';
+      }
+      std::cout << '\n';
+      std::cout << __FUNCTION__ <<  " | " << "Cost: " << p_md[i].second << '\n';
+    }
+  }
+}
+
+std::tuple<bool, std::vector<std::pair<int, double>>> GraphAL::Dijkstra(const int source) const {
+  // point, min distance
+  std::vector<std::pair<int, double>> p_md(v, std::make_pair(-1, std::numeric_limits<double>::max())); // parent, min distance
+  struct PairSortSecond {
+    bool operator () (const std::pair<int, double>& p1, const std::pair<int, double>& p2) {
+      return p1.second > p2.second;
+    }
+  };
+
+  std::priority_queue<std::pair<int, double>, std::vector<std::pair<int, double>>, PairSortSecond> pq;
+
+  p_md[source].second = 0;
+  pq.push(std::make_pair(source,0));
+
+  while(!pq.empty()) {
+    const auto [current_vert, current_cost] = pq.top();
+    pq.pop();
+    if(p_md[current_vert].first == -1) {
+      for(const auto& [end_vert, weight] : g[current_vert]) {
+        if(double cost = current_cost + weight; cost < p_md[end_vert].second) {
+          pq.push(std::make_pair(end_vert, cost));
+          p_md[end_vert] = std::make_pair(current_vert, cost);
+        }
+      }
+    }
+  }
+  // Check if any paths found
+  bool found_any = false;
+  for(const auto& ele : p_md) {
+    if(ele.first!=-1) {
+      found_any = true;
+      break;
+    }
+  }
+  PrintAllDijkstraPathsFound(source, p_md);
+  return {found_any, p_md};
+}
+
+
 } // namespace grahAL
 
 
@@ -379,7 +490,9 @@ int main() {
   // auto flow = g_al.fordFulkerson(0,4);
   // std::cout << "Flow from source to sink: " << flow << '\n';
 
-  auto [mother_vertex_found, mv] = g_al.FindMotherVertex();
+  // auto [mother_vertex_found, mv] = g_al.FindMotherVertex();
 
+  // const auto[path_found, path_cost, path] = g_al.Dijkstra(0, 4);
+  const auto[path_found, p_md] = g_al.Dijkstra(0);
   return 0;
 }
