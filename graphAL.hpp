@@ -22,7 +22,7 @@ private:
   //
   // template <typename T>
   // void fill_row(std::vector<double>& row, T& dist);
-  
+
   double fordFulkersonRGUtil(int source, int sink);
 
   int UnionFindFindUtil(const int v, const std::vector<int>& parent) const;
@@ -31,7 +31,7 @@ private:
   int UnionFindRCFindUtil(int v, std::vector<std::pair<int, int>>& subsets) const;
   void UnionFindRCUnionUtil(int v1, int v2, std::vector<std::pair<int, int>>& subsets) const;
 
-  // void DFSUtil(const int source, std::vector<bool>& visited) const;
+  void DFSUtil(const int source, std::vector<bool>& visited) const;
   //
   // bool colourGraphUtil(const int vert, const int n_c, std::vector<int>& colour) const;
   // void allPathsBetweenUtil(const int source, int sink, std::vector<int>& path,
@@ -63,9 +63,9 @@ public:
   // Union Find Algorithms
   virtual bool UnionFindDetectCycle() const override;
   virtual bool UnionFindRCDetectCycle() const override;
-//
-//   // Find mother Vertex
-//   virtual std::tuple<bool, int> FindMotherVertex () const override;
+
+  // Find mother Vertex
+  virtual std::tuple<bool, int> FindMotherVertex () const override;
 //
 //   // All Paths Between 2 vertices
 //   virtual std::tuple<bool, std::vector<std::vector<int>>> allPathsBetween(int source, int sink) const override;

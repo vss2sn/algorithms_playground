@@ -302,6 +302,33 @@ double GraphAL::fordFulkerson(int source, int sink) const {
   return rg.fordFulkersonRGUtil(source, sink);
 }
 
+void GraphAL::DFSUtil(const int v, std::vector<bool>& visited) const {
+  visited[v] = true;
+  for(const auto& [end_vert, weight] : g[v]) {
+    if(!visited[end_vert] && weight != 0) DFSUtil(end_vert, visited);
+  }
+}
+
+std::tuple<bool, int> GraphAL::FindMotherVertex () const {
+  if(v == 0) return {false, -1};
+  std::vector<bool> visited(v, false);
+  int mv = -1;
+  for(int i = 0; i < v; i++) {
+    if(!visited[i]) {
+      DFSUtil(i, visited);
+      mv = i;
+    }
+  }
+  std::fill(visited.begin(), visited.end(), false);
+  DFSUtil(mv, visited);
+  for(const auto& ele : visited) {
+    if(!ele) return {false,-1};
+  }
+  std::cout << __FUNCTION__ << " | " <<  " Mother vetex found" << '\n';
+  std::cout << __FUNCTION__ << " | " <<  " Mother vertex is "<< mv << '\n';
+  return {true, mv};
+}
+
 } // namespace grahAL
 
 
@@ -349,8 +376,10 @@ int main() {
   //   std::cout << "Cycle not found" << '\n';
   // }
 
-  auto flow = g_al.fordFulkerson(0,4);
-  std::cout << "Flow from source to sink: " << flow << '\n';
+  // auto flow = g_al.fordFulkerson(0,4);
+  // std::cout << "Flow from source to sink: " << flow << '\n';
+
+  auto [mother_vertex_found, mv] = g_al.FindMotherVertex();
 
   return 0;
 }
