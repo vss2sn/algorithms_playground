@@ -39,7 +39,8 @@ std::tuple<bool, std::vector<int>> GraphAL::BFS(int source, int sink) const {
     int vert = q.front();
     q.pop();
     for(const auto& p : g[vert]) {
-      if(parent[p.first] == -1) {
+      // the p.second!=0 check is rewuried for for fulkerson
+      if(parent[p.first] == -1 && p.second != 0) {
         parent[p.first] = vert;
         if(p.first == sink) {
           found = true;
@@ -264,6 +265,43 @@ bool GraphAL::UnionFindRCDetectCycle() const {
   return false;
 }
 
+double GraphAL::fordFulkersonRGUtil(int source, int sink) {
+  double max_flow = 0;
+  while(true) {
+    auto [found_path, path] = BFS(source, sink);
+    if(!found_path) {
+      break;
+    }
+    double min_flow = std::numeric_limits<double>::max();
+    for(int i = 0; i < path.size() - 1; i++) {
+      for(const auto& [end_vert, weight] : g[path[i]]) {
+        if(end_vert == path[i+1]) {
+          min_flow = std::min(min_flow, weight);
+        }
+      }
+    }
+    for(int i = 0; i < path.size() - 1; i++) {
+      for(auto& [end_vert, weight] : g[path[i]]) {
+        if(end_vert == path[i+1]) {
+          weight -= min_flow;
+        }
+      }
+      for(auto& [end_vert, weight] : g[path[i+1]]) {
+        if(end_vert == path[i]) {
+          weight += min_flow;
+        }
+      }
+    }
+    max_flow += min_flow;
+  }
+  return max_flow;
+}
+
+double GraphAL::fordFulkerson(int source, int sink) const {
+  GraphAL rg(*this);
+  return rg.fordFulkersonRGUtil(source, sink);
+}
+
 } // namespace grahAL
 
 
@@ -303,13 +341,16 @@ int main() {
   // for(const auto& e : mst) {
   //   std::cout << e.u << " --- " << e.v << '\n';
   // }
+//
+  // auto cycle_found = g_al.UnionFindDetectCycle();
+  // if(cycle_found) {
+  //   std::cout << "Cycle found" << '\n';
+  // }else {
+  //   std::cout << "Cycle not found" << '\n';
+  // }
 
-  auto cycle_found = g_al.UnionFindDetectCycle();
-  if(cycle_found) {
-    std::cout << "Cycle found" << '\n';
-  }else {
-    std::cout << "Cycle not found" << '\n';
-  }
+  auto flow = g_al.fordFulkerson(0,4);
+  std::cout << "Flow from source to sink: " << flow << '\n';
 
   return 0;
 }

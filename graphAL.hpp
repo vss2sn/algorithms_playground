@@ -22,9 +22,9 @@ private:
   //
   // template <typename T>
   // void fill_row(std::vector<double>& row, T& dist);
-  //
-  // double fordFulkersonRGUtil(int source, int sink);
-  //
+  
+  double fordFulkersonRGUtil(int source, int sink);
+
   int UnionFindFindUtil(const int v, const std::vector<int>& parent) const;
   void UnionFindUnionUtil(int v1, int v2, std::vector<int>& parent) const;
 
@@ -57,9 +57,9 @@ public:
   // Prim's algorithm only works on undirected complete graphs
   virtual std::tuple<bool, std::vector<Edge>> Prim() const override;
 
-//   // Ford Fulkerson
-//   virtual double fordFulkerson(int source, int sink) const override;
-//
+  // Ford Fulkerson
+  virtual double fordFulkerson(int source, int sink) const override;
+
   // Union Find Algorithms
   virtual bool UnionFindDetectCycle() const override;
   virtual bool UnionFindRCDetectCycle() const override;
