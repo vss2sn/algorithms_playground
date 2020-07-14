@@ -225,7 +225,7 @@ int GraphAM::UnionFindFindUtil(const int v, const std::vector<int>& parent) cons
   return UnionFindFindUtil(parent[v], parent);
 }
 
-void GraphAM::UnionFindUnionUtil(int v1, int v2, std::vector<int>& parent) const {
+void GraphAM::UnionFindUnionUtil(const int v1, const int v2, std::vector<int>& parent) const {
   // The two calls below to find are not required as in the union find algorithm,
   // the parents are already found and the unionutil is only called when they
   // are not equal. Left here for completeness (and future use) and as it's only going to be a
@@ -239,9 +239,9 @@ bool GraphAM::UnionFindDetectCycle() const {
 
   std::vector<int> parent(v, -1);
   for (int i = 0; i < v ; i++) {
+    int v1 = UnionFindFindUtil(i, parent);
     for (int j = 0; j < v; j++) {
       if (g[i][j] != 0) {
-        int v1 = UnionFindFindUtil(i, parent);
         int v2 = UnionFindFindUtil(j, parent);
         if(v1 == v2) {
           std::cout << __FUNCTION__ << " | " <<  " Cycle detected" << '\n';
@@ -257,14 +257,14 @@ bool GraphAM::UnionFindDetectCycle() const {
   return false;
 }
 
-int GraphAM::UnionFindRCFindUtil(int v, std::vector<std::pair<int, int>>& subsets) const {
+int GraphAM::UnionFindRCFindUtil(const int v, std::vector<std::pair<int, int>>& subsets) const {
   if(subsets[v].first != v) {
     subsets[v].first = UnionFindRCFindUtil(subsets[v].first, subsets);
   }
   return subsets[v].first;
 }
 
-void GraphAM::UnionFindRCUnionUtil(int v1, int v2, std::vector<std::pair<int, int>>& subsets) const {
+void GraphAM::UnionFindRCUnionUtil(const int v1, const int v2, std::vector<std::pair<int, int>>& subsets) const {
   int rv1 = UnionFindRCFindUtil(v1, subsets);
   int rv2 = UnionFindRCFindUtil(v2, subsets);
 
@@ -301,7 +301,7 @@ bool GraphAM::UnionFindRCDetectCycle() const {
       }
     }
   }
-  return true;
+  return false;
 }
 
 void GraphAM::DFSUtil(const int source, std::vector<bool>& visited) const {
@@ -393,11 +393,9 @@ bool GraphAM::colourGraphUtil(const int vert, const int n_c, std::vector<int>& c
     colour[vert] = c;
     safe_to_colour = true;
 
-    // More efficient to iterate over all the elements once just to make sure
-    // that there is no clear colour repition before running recursive searches
-    // and colour assignments
+    // Check if this is an acceptable colouring
     for(int i=0; i < v; i++) {
-      if (g[vert][i]!=0 && colour[i] == c) {
+      if (colour[i] == c && (g[vert][i]!=0 || g[i][vert]!=0)) {
         safe_to_colour = false;
         break;
       }
@@ -405,17 +403,12 @@ bool GraphAM::colourGraphUtil(const int vert, const int n_c, std::vector<int>& c
     if(!safe_to_colour) continue;
 
     // The recursive part of the algorithm
-    for(int i=0; i < v; i++) {
-      if(g[vert][i]!=0){
-        if(colour[i] == 0) {
-          safe_to_colour = colourGraphUtil(i, n_c, colour);
-        } else if (colour[i] == c) {  // Check to make sure any new colouring does not conflict
-          safe_to_colour = false;       // with the current vertex's colour
-        }
-        if(!safe_to_colour) break;
+    for(int i = 0; i < v; i++) {
+      if (colour[i] == 0 && (g[vert][i]!=0 || g[i][vert]!=0)) {  // can be directed graph
+        safe_to_colour = colourGraphUtil(i, n_c, colour);
       }
+      if(!safe_to_colour) break;
     }
-
     if(safe_to_colour) break;
   }
 
@@ -428,7 +421,7 @@ std::tuple<bool, std::vector<int>> GraphAM::colourGraph(const int n_c) const {
   if(v == 0 && n_c > 0 ) return {true, std::vector<int>()};
   if(v != 0 && n_c == 0 ) return {false, std::vector<int>()};
 
-  for(int i = 0 ; i< v; i++) {
+  for(int i = 0; i < v; i++) {
     if(g[i][i] != 0) {
       std::cout << __FUNCTION__ << " | " <<  " Vertex " << i << " has an edge to itelf " << '\n';
       std::cout << __FUNCTION__ << " | " <<  " Unable to colour graph using " << n_c << " colours " << '\n';
@@ -437,9 +430,10 @@ std::tuple<bool, std::vector<int>> GraphAM::colourGraph(const int n_c) const {
   }
 
   std::vector<int> colour(v, 0);
-  for(auto vert : colour) {
-    if(vert == 0) {
-      bool coloured = colourGraphUtil(vert, n_c, colour);
+
+  for(int i = 0; i < v; i++) {
+    if(colour[i] == 0) {
+      bool coloured = colourGraphUtil(i, n_c, colour);
       if(!coloured) {
         std::cout << __FUNCTION__ << " | " <<  " Unable to colour graph using " << n_c << " colours " << '\n';
         return {false, std::vector<int>()};
@@ -733,11 +727,11 @@ bool GraphAM::BellmanFord(const int source) const {
 } // namespace graphAM
 
 
-// int main () {
-//
-//   // Common graph for most of the tests below
-//   graphAM::GraphAM g_am;
-//
+int main () {
+
+  // Common graph for most of the tests below
+  graphAM::GraphAM g_am;
+
 //   // Test random distribution
 //   std::binomial_distribution<> dist(1,0.2);
 //   graphAM::GraphAM g1(11, dist);
@@ -849,18 +843,18 @@ bool GraphAM::BellmanFord(const int source) const {
 //   g_am = graphAM::GraphAM(g);
 //   auto [paths_found, paths] = g_am.allPathsBetween(0, 5);
 //
-//   // Test for colourGraph
-//   g = {
-//     {0, 1, 1, 0, 0, 0},
-//     {1, 0, 1, 0, 0, 1},
-//     {1, 1, 0, 1, 1, 1},
-//     {0, 0, 1, 0, 1, 1},
-//     {0, 0, 1, 1, 0, 1},
-//     {0, 1, 1, 1, 1, 0}
-//   };
-//
-//   g_am = graphAM::GraphAM(g);
-//   auto [coloured, colours] = g_am.colourGraph(4);
+  // Test for colourGraph
+  std::vector<std::vector<double>> g = {
+    {0, 1, 1, 0, 0, 0},
+    {1, 0, 1, 0, 0, 1},
+    {1, 1, 0, 1, 1, 1},
+    {0, 0, 1, 0, 1, 1},
+    {0, 0, 1, 1, 0, 1},
+    {0, 1, 1, 1, 1, 0}
+  };
+
+  g_am = graphAM::GraphAM(g);
+  auto [coloured, colours] = g_am.colourGraph(4);
 //
 // g = {
 //    {0, 1, 1, 0, 0, 0},
@@ -907,5 +901,5 @@ bool GraphAM::BellmanFord(const int source) const {
 //     std::cout << "The graph is not strongly connected" << '\n';
 //   }
 //
-//   return 0;
-// }
+  return 0;
+}

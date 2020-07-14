@@ -30,10 +30,10 @@ private:
   double fordFulkersonRGUtil(int source, int sink);
 
   int UnionFindFindUtil(const int v, const std::vector<int>& parent) const;
-  void UnionFindUnionUtil(int v1, int v2, std::vector<int>& parent) const;
+  void UnionFindUnionUtil(const int v1, const int v2, std::vector<int>& parent) const;
 
-  int UnionFindRCFindUtil(int v, std::vector<std::pair<int, int>>& subsets) const;
-  void UnionFindRCUnionUtil(int v1, int v2, std::vector<std::pair<int, int>>& subsets) const;
+  int UnionFindRCFindUtil(const int v, std::vector<std::pair<int, int>>& subsets) const;
+  void UnionFindRCUnionUtil(const int v1, const int v2, std::vector<std::pair<int, int>>& subsets) const;
 
   void DFSUtil(const int source, std::vector<bool>& visited) const;
 
