@@ -1,5 +1,7 @@
 #include <algorithm>
+#include <cmath>
 #include <iostream>
+#include <memory>
 #include <vector>
 
 namespace sort {
@@ -298,51 +300,3 @@ void HeapSort(std::vector<T>& to_sort) {
 }
 
 }  // namespace sort
-
-// int main() {
-//
-//   int size = 10000;
-// 	std::vector<int> to_sort(size);
-//   std::random_device rd;
-//   std::mt19937 gen(rd());
-//   std::uniform_real_distribution<> dist(0, size);
-//
-//   for(int j = 0; j < 1000; j++) {
-//     std::cout << "Iteration: " << j << '\n';
-//     std::generate(to_sort.begin(), to_sort.end(), [&](){return dist(gen);});
-//     auto backup = to_sort;
-//
-//     // for(const auto& ele : to_sort) {
-//     //   std::cout << ele << ' ';
-//     // }
-//     // std::cout << '\n';
-//
-//     // sort::BubbleSort(to_sort);
-//     // sort::InsertionSort(to_sort);
-//     // sort::InsertionSortWithCb(to_sort);
-//     // sort::InsertionSortWithRiCb(to_sort);
-//     // sort::InsertionSortWithBinarySearch(to_sort);
-//     // sort::MergeSort(to_sort);
-//     // sort::QuickSort(to_sort);
-//     // sort::SelectionSort(to_sort);
-//     // sort::BucketSort(to_sort);
-// 		 // sort::CountingSort(to_sort);
-//     // sort::HeapSort(to_sort);
-//     std::sort(backup.begin(), backup.end());
-//     for(int i=0; i< size; i++) {
-//       if(to_sort[i] != backup[i]) {
-//         std::cout << "Problem" << '\n';
-//         for(const auto& ele : to_sort) {
-//           std::cout << ele << ' ';
-//         }
-//         std::cout << '\n';
-//         return 0;
-//       }
-//     }
-//     // for(const auto& ele : to_sort) {
-//     // 	std::cout << ele << ' ';
-//     // }
-//     // std::cout << '\n';
-//   }
-//   return 0;
-// }
