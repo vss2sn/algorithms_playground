@@ -14,8 +14,11 @@ target_include_directories(algorithms_library
 
 target_sources(algorithms_library
   PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/graph.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/graphAL.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/graphAM.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/binary_search_tree.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/binary_tree.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/graph.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/graphAL.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/graphAM.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/binary_search_tree.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/binary_tree.cpp
     # sort is header only
 )
 
@@ -24,7 +27,7 @@ set_target_properties(algorithms_library
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED YES
     CXX_EXTENSIONS NO
-    CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -Wall -Werror"
+    CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wall -Werror"
 )
 
 add_executable(play ${CMAKE_CURRENT_SOURCE_DIR}/main/main.cpp)
