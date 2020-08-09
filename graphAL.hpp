@@ -33,7 +33,7 @@ private:
 
   void DFSUtil(const int source, std::vector<bool>& visited) const;
 
-  // bool colourGraphUtil(const int vert, const int n_c, std::vector<int>& colour) const;
+  bool colourGraphUtil(const std::vector<std::vector<std::pair<int, double>>>& g_undirected, const int vert, const int n_c, std::vector<int>& colour) const;
   // void allPathsBetweenUtil(const int source, int sink, std::vector<int>& path,
   //     std::vector<std::vector<int>>& paths, std::vector<bool>& visited) const;
   //
@@ -70,8 +70,8 @@ public:
 //   // All Paths Between 2 vertices
 //   virtual std::tuple<bool, std::vector<std::vector<int>>> allPathsBetween(int source, int sink) const override;
 //
-//   // Colour graph using n_c colours
-//   virtual std::tuple<bool, std::vector<int>> colourGraph(int n_c) const override;
+  // Colour graph using n_c colours
+  virtual std::tuple<bool, std::vector<int>> colourGraph(int n_c) const override;
 
   // Dijkstra from source to sink
   virtual std::tuple<bool, double, std::vector<int>> Dijkstra(const int source, const int sink) const override;

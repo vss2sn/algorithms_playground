@@ -439,60 +439,128 @@ std::tuple<bool, std::vector<std::pair<int, double>>> GraphAL::Dijkstra(const in
   return {found_any, p_md};
 }
 
+bool GraphAL::colourGraphUtil(const std::vector<std::vector<std::pair<int, double>>>& g_undirected, const int vert, const int n_c, std::vector<int>& colour) const {
+  std::cout << __FUNCTION__ << __LINE__ << '\n';
+  std::cout << "Vert: " << vert << '\n';
+  bool safe_to_colour = true;
+  for(const auto& c: colour ) {
+    std::cout << c << " ";
+  }
+  std::cout << '\n';
+  for(int c = 1; c <= n_c; c++) {
+    colour[vert] = c;
+    safe_to_colour = true;
+    for(const auto& [end_vert, weight] : g_undirected[vert]) {
+      if(colour[end_vert] == c) {
+        safe_to_colour = false;
+        break;
+      }
+    }
+    if(!safe_to_colour) {
+      continue;
+    }
+    for(const auto& [end_vert, weight] : g_undirected[vert]) {
+      if(colour[end_vert] == 0) {
+        std::cout << __FUNCTION__ << __LINE__ << '\n';
+        safe_to_colour = colourGraphUtil(g_undirected, end_vert, n_c, colour);
+        if(!safe_to_colour) std::cout << "returned false" << '\n';
+      }
+      if(!safe_to_colour) break;
+    }
+    if(safe_to_colour) break;
+  }
+  if(!safe_to_colour) {
+    colour[vert] = 0;
+  }
+  return safe_to_colour;
+}
+
+std::tuple<bool, std::vector<int>> GraphAL::colourGraph(int n_c) const {
+  if(v == 0 && n_c > 0 ) return {true, std::vector<int>()};
+  if(v != 0 && n_c == 0 ) return {false, std::vector<int>()};
+
+  // Convert to undirected graph
+  // TODO (vss): Make this more efficient and add as util
+  std::vector<std::vector<std::pair<int, double>>> g_undirected = g;
+  for(int i=0; i < v; i++) {
+    for(const auto& [end_vert, weight] : g[i]) {
+      if(std::find_if(g_undirected[end_vert].begin(), g_undirected[end_vert].end(),
+                  [&](const auto& p) {return p.first == i;})
+         == g_undirected[end_vert].end()) {
+        g_undirected[end_vert].emplace_back(std::make_pair(i, weight));
+      }
+    }
+  }
+
+  std::vector<int> colour(v, 0);
+  for (int i=0 ; i< v; i++) {
+    if(colour[i] == 0) {
+      if(!colourGraphUtil(g_undirected, i, n_c, colour)) {
+        return {false, std::vector<int>()};
+      }
+    }
+  }
+  return {true, colour};
+}
 
 } // namespace grahAL
 
-
-using Pair = std::pair<int, double>;
-
-int main() {
-	std::vector<std::vector<Pair>> g_v(5, std::vector<Pair>(3));
-	g_v[0] = {std::make_pair(1,5), std::make_pair(2,1), std::make_pair(4,4)};
-	g_v[1] = {std::make_pair(3,7), std::make_pair(4,2)};
-	g_v[2] = {std::make_pair(1,8)};
-	g_v[3] = {std::make_pair(4,9)};
-	g_v[4] = {std::make_pair(1,1), std::make_pair(0,5)};
-
-	graphAL::GraphAL g_al(g_v);
-	// auto [found, path] = g_al.DFS(1,4);
-	// if(found) {
-	// 	std::cout << "Path: ";
-	// 	for(const auto& vert : path) {
-	// 		std::cout << vert << ' ';
-	// 	}
-	// 	std::cout << '\n';
-	// } else {
-	// 	std::cout << "path not found" << '\n';
-	// }
-  //   // Test for Prim
-  // auto [found_prim, mst] = g_al.Prim();
-  // if(found_prim) {
-  //   std::cout << "MST:" << '\n';
-  //   for(const auto& e : mst) {
-  //     std::cout << e.u << " --- " << e.v << '\n';
-  //   }
-  // } else {
-  //   std::cout << "MST not found" << '\n';
-  // }
-  // auto mst = g_al.KruskalsAlgorithm();
-  // std::cout << "MST:" << '\n';
-  // for(const auto& e : mst) {
-  //   std::cout << e.u << " --- " << e.v << '\n';
-  // }
+// using Pair = std::pair<int, double>;
 //
-  // auto cycle_found = g_al.UnionFindDetectCycle();
-  // if(cycle_found) {
-  //   std::cout << "Cycle found" << '\n';
-  // }else {
-  //   std::cout << "Cycle not found" << '\n';
-  // }
-
-  // auto flow = g_al.fordFulkerson(0,4);
-  // std::cout << "Flow from source to sink: " << flow << '\n';
-
-  // auto [mother_vertex_found, mv] = g_al.FindMotherVertex();
-
-  // const auto[path_found, path_cost, path] = g_al.Dijkstra(0, 4);
-  const auto[path_found, p_md] = g_al.Dijkstra(0);
-  return 0;
-}
+// int main() {
+// 	std::vector<std::vector<Pair>> g_v(5, std::vector<Pair>(3));
+// 	g_v[0] = {std::make_pair(1,5), std::make_pair(4,4)};
+// 	g_v[1] = {std::make_pair(3,7)};
+// 	g_v[2] = {std::make_pair(1,8)};
+// 	g_v[3] = {std::make_pair(4,9)};
+// 	g_v[4] = {std::make_pair(0,5)};
+//
+// 	graphAL::GraphAL g_al(g_v);
+// 	auto [found, path] = g_al.DFS(1,4);
+// 	if(found) {
+// 		std::cout << "Path: ";
+// 		for(const auto& vert : path) {
+// 			std::cout << vert << ' ';
+// 		}
+// 		std::cout << '\n';
+// 	} else {
+// 		std::cout << "path not found" << '\n';
+// 	}
+//     // Test for Prim
+//   auto [found_prim, mst] = g_al.Prim();
+//   if(found_prim) {
+//     std::cout << "MST:" << '\n';
+//     for(const auto& e : mst) {
+//       std::cout << e.u << " --- " << e.v << '\n';
+//     }
+//   } else {
+//     std::cout << "MST not found" << '\n';
+//   }
+//   auto mst = g_al.KruskalsAlgorithm();
+//   std::cout << "MST:" << '\n';
+//   for(const auto& e : mst) {
+//     std::cout << e.u << " --- " << e.v << '\n';
+//   }
+//
+//   auto cycle_found = g_al.UnionFindDetectCycle();
+//   if(cycle_found) {
+//     std::cout << "Cycle found" << '\n';
+//   }else {
+//     std::cout << "Cycle not found" << '\n';
+//   }
+//
+//   auto flow = g_al.fordFulkerson(0,4);
+//   std::cout << "Flow from source to sink: " << flow << '\n';
+//
+//   auto [mother_vertex_found, mv] = g_al.FindMotherVertex();
+//
+//   const auto[path_found, path_cost, path] = g_al.Dijkstra(0, 4);
+//   const auto[path_found, p_md] = g_al.Dijkstra(0);
+//   int n_c = 3;
+//   const auto& [colourable, colour] = g_al.colourGraph(n_c);
+//   std::cout << "The graph is colourable: " << colourable << " with " << n_c << " colours." << '\n';
+//   for(const auto& c : colour) {
+//     std::cout << c << '\n';
+//   }
+//   return 0;
+// }
