@@ -4,7 +4,7 @@
 #include <random>
 #include <vector>
 
-#include "binary_tree.hpp"
+#include "algorithms/binary_tree.hpp"
 
 namespace binary_tree {
 

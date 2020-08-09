@@ -1,7 +1,7 @@
 #ifndef BINARY_SEARCH_TREE_HPP
 #define BINARY_SEARCH_TREE_HPP
 
-#include "binary_tree.hpp"
+#include "algorithms/binary_tree.hpp"
 
 namespace binary_search_tree {
 

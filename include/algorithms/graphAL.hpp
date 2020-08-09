@@ -8,7 +8,7 @@
 #include <vector>
 #include <utility>
 
-#include "graph.hpp"
+#include "algorithms/graph.hpp"
 
 namespace graphAL {
 

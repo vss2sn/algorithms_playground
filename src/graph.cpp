@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "graph.hpp"
+#include "algorithms/graph.hpp"
 
 Edge::Edge(int u, int v, double w) {
   this->u = u;

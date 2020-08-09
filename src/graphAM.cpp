@@ -8,7 +8,7 @@
 #include <utility>
 #include <vector>
 
-#include "graphAM.hpp"
+#include "algorithms/graphAM.hpp"
 
 namespace graphAM {
 
@@ -727,11 +727,11 @@ bool GraphAM::BellmanFord(const int source) const {
 } // namespace graphAM
 
 
-int main () {
-
-  // Common graph for most of the tests below
-  graphAM::GraphAM g_am;
-
+// int main () {
+//
+//   // Common graph for most of the tests below
+//   graphAM::GraphAM g_am;
+//
 //   // Test random distribution
 //   std::binomial_distribution<> dist(1,0.2);
 //   graphAM::GraphAM g1(11, dist);
@@ -843,18 +843,18 @@ int main () {
 //   g_am = graphAM::GraphAM(g);
 //   auto [paths_found, paths] = g_am.allPathsBetween(0, 5);
 //
-  // Test for colourGraph
-  std::vector<std::vector<double>> g = {
-    {0, 1, 1, 0, 0, 0},
-    {1, 0, 1, 0, 0, 1},
-    {1, 1, 0, 1, 1, 1},
-    {0, 0, 1, 0, 1, 1},
-    {0, 0, 1, 1, 0, 1},
-    {0, 1, 1, 1, 1, 0}
-  };
-
-  g_am = graphAM::GraphAM(g);
-  auto [coloured, colours] = g_am.colourGraph(4);
+//   // Test for colourGraph
+//   std::vector<std::vector<double>> g = {
+//     {0, 1, 1, 0, 0, 0},
+//     {1, 0, 1, 0, 0, 1},
+//     {1, 1, 0, 1, 1, 1},
+//     {0, 0, 1, 0, 1, 1},
+//     {0, 0, 1, 1, 0, 1},
+//     {0, 1, 1, 1, 1, 0}
+//   };
+//
+//   g_am = graphAM::GraphAM(g);
+//   auto [coloured, colours] = g_am.colourGraph(4);
 //
 // g = {
 //    {0, 1, 1, 0, 0, 0},
@@ -901,5 +901,5 @@ int main () {
 //     std::cout << "The graph is not strongly connected" << '\n';
 //   }
 //
-  return 0;
-}
+//   return 0;
+// }

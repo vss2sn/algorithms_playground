@@ -5,7 +5,7 @@
 #include <unordered_set>
 #include <vector>
 
-#include "graphAL.hpp"
+#include "algorithms/graphAL.hpp"
 
 namespace graphAL {
 

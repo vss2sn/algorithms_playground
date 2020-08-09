@@ -4,10 +4,10 @@
 #include <random>
 #include <thread>
 
-#include "binary_search_tree.hpp"
-#include "binary_tree.hpp"
-#include "graphAM.hpp"
-#include "sort.hpp"
+#include "algorithms/binary_search_tree.hpp"
+#include "algorithms/binary_tree.hpp"
+#include "algorithms/graphAM.hpp"
+#include "algorithms/sort.hpp"
 
 int main() {
 	std::vector<int> to_sort{10,8,9,3,5,6,1,4,2,7};

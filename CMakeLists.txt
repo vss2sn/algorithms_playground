@@ -1,0 +1,25 @@
+project(algorithms)
+
+cmake_minimum_required(VERSION 3.5)
+
+add_library(algorithms_library)
+target_include_directories(algorithms_library
+  PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+target_sources(algorithms_library
+  PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/graph.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/graphAL.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/graphAM.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/binary_search_tree.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/binary_tree.cpp
+    # sort is header only
+)
+
+set_target_properties(algorithms_library
+  PROPERTIES
+    CXX_STANDARD "17"
+    CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wall -Werror"
+)
+
+add_executable(main ${CMAKE_CURRENT_SOURCE_DIR}/main/main.cpp)
+target_link_libraries(main PRIVATE algorithms_library)

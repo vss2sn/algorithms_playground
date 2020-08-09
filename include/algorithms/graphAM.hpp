@@ -7,7 +7,7 @@
 #include <tuple>
 #include <vector>
 
-#include "graph.hpp"
+#include "algorithms/graph.hpp"
 
 namespace graphAM {
 
