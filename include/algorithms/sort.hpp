@@ -110,6 +110,7 @@ void InsertionSortWithBinarySearch(std::vector<T>& to_sort) {
 }
 
 // Playing with STL
+// NOTE: This is faster than the `STL optimized version` below
 template<typename T>
 void InsertionSortWithBinarySearchWithCb(std::vector<T>& to_sort) {
 	int v = to_sort.size();
@@ -120,6 +121,32 @@ void InsertionSortWithBinarySearchWithCb(std::vector<T>& to_sort) {
 		int loc = BinarySearchUtil(to_sort, key, 0, j);
 		std::copy_backward(&to_sort[loc], &to_sort[i], &to_sort[i+1]);
 		to_sort[loc] = key;
+	}
+}
+
+// Playing with STL
+template<typename T>
+void InsertionSortOptimized(std::vector<T>& to_sort) {
+	for(auto it = to_sort.begin(); it != to_sort.end(); ++it) {
+		std::rotate(std::upper_bound(to_sort.begin(), it, *it), it, it + 1);
+	}
+}
+
+// NOTE: This is faster than the `STL optimized version` above
+template<typename T>
+void InsertionSortOptimizedWithCb(std::vector<T>& to_sort) {
+	for(auto it = to_sort.begin() + 1; it != to_sort.end(); ++it) {
+		const T key = *it;
+		const auto it_next_larger = std::upper_bound(to_sort.begin(), it, *it);
+		// std::cout << "Greater sorted element: " << *it_next_larger << '\n';
+		// for(const auto& v : to_sort) {
+		// 	std::cout << v << " ";
+		// }
+		// // std::cout << '\n';
+		// if(it_next_larger != it) {
+			std::copy_backward(it_next_larger, it, it+1);
+			*it_next_larger = key;
+		// }
 	}
 }
 

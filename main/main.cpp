@@ -12,7 +12,7 @@
 int main() {
 	std::vector<int> to_sort{10,8,9,3,5,6,1,4,2,7};
 
-	sort::HeapSort(to_sort);
+	sort::InsertionSortOptimized(to_sort);
 	for(const auto& ele : to_sort) {
 		std::cout << ele << ' ';
 	}

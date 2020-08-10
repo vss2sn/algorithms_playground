@@ -36,6 +36,20 @@ TEST_F(SortingTestRandomInt, InsertionSortWithBinarySearchWithCb) {
   ASSERT_EQ(to_sort_insertion_sort_with_binary_search_with_cb, to_sort);
 }
 
+TEST_F(SortingTestRandomInt, InsertionSortOptimized) {
+  auto to_sort_insertion_sort_optimized(to_sort);
+  sort::InsertionSortOptimized(to_sort_insertion_sort_optimized);
+  std::sort(to_sort.begin(), to_sort.end());
+  ASSERT_EQ(to_sort_insertion_sort_optimized, to_sort);
+}
+
+TEST_F(SortingTestRandomInt, InsertionSortOptimizedWithCb) {
+  auto to_sort_insertion_sort_optimized_with_cb(to_sort);
+  sort::InsertionSortOptimizedWithCb(to_sort_insertion_sort_optimized_with_cb);
+  std::sort(to_sort.begin(), to_sort.end());
+  ASSERT_EQ(to_sort_insertion_sort_optimized_with_cb, to_sort);
+}
+
 TEST_F(SortingTestRandomInt, BubbleSort) {
   auto bubble_sort(to_sort);
   sort::BubbleSort(bubble_sort);
