@@ -138,15 +138,8 @@ void InsertionSortOptimizedWithCb(std::vector<T>& to_sort) {
 	for(auto it = to_sort.begin() + 1; it != to_sort.end(); ++it) {
 		const T key = *it;
 		const auto it_next_larger = std::upper_bound(to_sort.begin(), it, *it);
-		// std::cout << "Greater sorted element: " << *it_next_larger << '\n';
-		// for(const auto& v : to_sort) {
-		// 	std::cout << v << " ";
-		// }
-		// // std::cout << '\n';
-		// if(it_next_larger != it) {
-			std::copy_backward(it_next_larger, it, it+1);
-			*it_next_larger = key;
-		// }
+		std::copy_backward(it_next_larger, it, it+1);
+		*it_next_larger = key;
 	}
 }
 
@@ -194,6 +187,49 @@ template<typename T>
 void MergeSort(std::vector<T>& to_sort) {
 	int v = to_sort.size();
 	MergeSortUtil(to_sort, 0, v-1);
+}
+
+template<typename T>
+void MergeSortMergeInPlaceUtil(std::vector<T>& to_sort, int begin, int mid, int end) {
+	int begin2 = mid+1;
+
+	while(begin <= mid && begin2 <= end) {
+		if(to_sort[begin] <= to_sort[begin2]) {
+			++begin;
+		} else {
+			// std::rotate(to_sort.begin() + begin,
+			// 						to_sort.begin() + begin2,
+			// 						to_sort.begin() + begin2 + 1);
+			// Alternate syntax as this file rarely uses iterators
+			std::rotate(&to_sort[begin], &to_sort[begin2], &to_sort[begin2+1]);
+			// NOTE: The commented out section below is also correct
+			// and is the cb version which appears to be faster
+			// const auto key = *(to_sort.begin() + begin2);
+			// std::copy_backward(to_sort.begin() + begin,
+			// 									 to_sort.begin() + begin2,
+			// 									 to_sort.begin() + begin2+1);
+		  // *(to_sort.begin() + begin) = key;
+			++begin;
+			++mid;
+			++begin2;
+		}
+	}
+}
+
+template<typename T>
+void MergeSortInPlaceUtil(std::vector<T>& to_sort, int begin, int end) {
+	if(begin < end) {
+		int mid = begin + (end - begin)/2;
+		MergeSortUtil(to_sort, begin, mid);
+		MergeSortUtil(to_sort, mid+1, end);
+		MergeSortMergeInPlaceUtil(to_sort, begin, mid, end);
+	}
+}
+
+template<typename T>
+void MergeSortInPlace(std::vector<T>& to_sort) {
+	int v = to_sort.size();
+	MergeSortInPlaceUtil(to_sort, 0, v-1);
 }
 
 template<typename T>
