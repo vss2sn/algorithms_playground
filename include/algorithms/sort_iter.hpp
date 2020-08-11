@@ -75,4 +75,27 @@ void MergeSort(It begin, It end, Compare compare = Compare{}) {
   MergeSortMergeUtil(begin, mid, end, compare);
 }
 
+template<typename It, typename Compare = std::less<>>
+It QuickSortPartitionUtil(It begin, It end, Compare compare = Compare{}) {
+  auto pivot = std::prev(end);
+  auto current = begin;
+  for(auto it = begin; it != std::prev(end); ++it) {
+    if(compare(*it, *pivot)) {
+      std::iter_swap(current, it);
+      ++current;
+    }
+  }
+  std::iter_swap(current, pivot);
+  return current;
+}
+
+template<typename It, typename Compare = std::less<>>
+void QuickSort(It begin, It end, Compare compare = Compare{}) {
+  if(begin < end) {
+    auto partition = QuickSortPartitionUtil(begin, end);
+    QuickSort(begin, partition);
+    QuickSort(std::next(partition, 1), end);
+  }
+}
+
 }  // namespace sort
