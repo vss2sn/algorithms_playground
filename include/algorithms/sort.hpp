@@ -294,7 +294,6 @@ void BucketSort(std::vector<T>& to_sort, const int n = 10) {
 	}
 	auto it = to_sort.begin();
 	for(const auto& bucket : buckets) {
-		// std::sort(bucket->begin(), bucket->end());
 		QuickSort(*bucket);
 		std::copy(bucket->begin(), bucket->end(), it);
 		std::advance(it, bucket->size());
