@@ -14,9 +14,25 @@
 
 using namespace std::chrono;
 
+// int main() {
+//   std::vector<int> to_sort{2,1,3,6,4,6,2,7,5,7,8,0};
+// 	for(const auto p: to_sort) {
+// 		std::cout << p << " ";
+// 	}
+// 	std::cout << '\n';
+//
+// 	sort::MergeSort(to_sort.begin(), to_sort.end());
+// 	for(const auto p: to_sort) {
+// 		std::cout << p << " ";
+// 	}
+// 	std::cout << '\n';
+// 	assert(std::is_sorted(to_sort.begin(), to_sort.end()));
+// 	return 0;
+// }
+
 int main() {
 
-	const int size_to_sort{1000};
+	const int size_to_sort{100000};
   std::vector<int> to_sort(size_to_sort);
   std::random_device rd;
 
@@ -24,13 +40,13 @@ int main() {
   std::uniform_real_distribution<> dist(0, size_to_sort);
 	int duration = 0;
 
-	for(int i = 0; i < 1000; i++) {
+	for(int i = 0; i < 10; i++) {
 		std::cout << "Iteration: " << i << std::endl;
 		std::generate(to_sort.begin(), to_sort.end(), [&](){return dist(gen);});
 
 		auto start = high_resolution_clock::now();
 		// sort::InsertionSort(to_sort);
-		sort::InsertionSort(to_sort.begin(), to_sort.end());
+		sort::MergeSort(to_sort.begin(), to_sort.end());
 		auto stop = high_resolution_clock::now();
 
 		assert(std::is_sorted(to_sort.begin(), to_sort.end()));
