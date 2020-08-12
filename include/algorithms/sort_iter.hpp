@@ -76,10 +76,10 @@ void MergeSort(It begin, It end, Compare compare = Compare{}) {
 }
 
 template<typename It, typename Compare = std::less<>>
-It QuickSortPartitionUtil(It begin, It end, Compare compare = Compare{}) {
-  auto pivot = std::prev(end);
+It QuickSortPartitionUtil(It begin, It last, Compare compare = Compare{}) {
+  auto pivot = last;
   auto current = begin;
-  for(auto it = begin; it != std::prev(end); ++it) {
+  for(auto it = begin; it < last; ++it) {
     if(compare(*it, *pivot)) {
       std::iter_swap(current, it);
       ++current;
@@ -90,12 +90,17 @@ It QuickSortPartitionUtil(It begin, It end, Compare compare = Compare{}) {
 }
 
 template<typename It, typename Compare = std::less<>>
-void QuickSort(It begin, It end, Compare compare = Compare{}) {
-  if(begin < end) {
-    auto partition = QuickSortPartitionUtil(begin, end);
-    QuickSort(begin, partition);
-    QuickSort(std::next(partition, 1), end);
+void QuickSortUtil(It begin, It last, Compare compare = Compare{}) {
+  if(begin < last) {
+    auto partition = QuickSortPartitionUtil(begin, last, compare);
+    QuickSortUtil(begin, std::prev(partition, 1), compare);
+    QuickSortUtil(std::next(partition, 1), last, compare);
   }
+}
+
+template<typename It, typename Compare = std::less<>>
+void QuickSort(It begin, It end, Compare compare = Compare{}) {
+    QuickSortUtil(begin, std::prev(end), compare);
 }
 
 template<typename It, typename Compare = std::less<>>

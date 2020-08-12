@@ -1,5 +1,8 @@
 project(algorithms_playground)
 
+# set( CMAKE_C_COMPILER /usr/bin/clang)
+# set( CMAKE_CXX_COMPILER /usr/bin/clang++)
+
 cmake_minimum_required(VERSION 3.10)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -21,7 +24,7 @@ set_target_properties(algorithms_library
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED YES
     CXX_EXTENSIONS NO
-    CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wall -Werror"
+    CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -Wall -Werror"
 )
 
 add_executable(play ${CMAKE_CURRENT_SOURCE_DIR}/main/main.cpp)

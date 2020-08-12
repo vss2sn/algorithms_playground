@@ -32,7 +32,7 @@ using namespace std::chrono;
 
 int main() {
 
-	const int size_to_sort{1000};
+	const int size_to_sort{10000};
   std::vector<int> to_sort(size_to_sort);
   std::random_device rd;
 
@@ -45,11 +45,11 @@ int main() {
 		std::generate(to_sort.begin(), to_sort.end(), [&](){return dist(gen);});
 
 		auto start = high_resolution_clock::now();
-		sort::MergeSort(to_sort);
-		// sort::MergeSort(to_sort.begin(), to_sort.end());
+		// sort::QuickSort(to_sort);
+		sort::QuickSort(to_sort.begin(), to_sort.end(), std::greater<>());
 		auto stop = high_resolution_clock::now();
 
-		assert(std::is_sorted(to_sort.begin(), to_sort.end()));
+		assert(std::is_sorted(to_sort.begin(), to_sort.end(), std::greater<>()));
 		duration += duration_cast<microseconds>(stop - start).count();
 	}
 
