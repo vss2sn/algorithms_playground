@@ -97,6 +97,11 @@ TEST_F(SortingTestRandomInt, HeapSort) {
   ASSERT_TRUE(std::is_sorted(to_sort.begin(), to_sort.end()));
 }
 
+TEST_F(SortingTestRandomInt, HeapSortIter) {
+  sort::HeapSort(to_sort.begin(), to_sort.end());
+  ASSERT_TRUE(std::is_sorted(to_sort.begin(), to_sort.end()));
+}
+
 TEST_F(SortingTestRandomInt, STLSort) {
   std::sort(to_sort.begin(), to_sort.end());
   ASSERT_TRUE(std::is_sorted(to_sort.begin(), to_sort.end()));

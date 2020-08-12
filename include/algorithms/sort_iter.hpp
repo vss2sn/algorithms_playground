@@ -98,4 +98,29 @@ void QuickSort(It begin, It end, Compare compare = Compare{}) {
   }
 }
 
+template<typename It, typename Compare = std::less<>>
+void HeapSortHeapifyUtil(It begin, It current, It end, Compare compare) {
+  auto it = current;
+  auto dist = std::distance(begin, current)*2;
+  auto l = std::next(begin, dist + 1);
+  auto r = std::next(l, 1);
+  if(l < end && *l > *it) it = l;
+  if(r < end && *r > *it) it = r;
+  if(it != current) {
+    std::iter_swap(it, current);
+    HeapSortHeapifyUtil(begin, it, end, compare);
+  }
+}
+
+template<typename It, typename Compare = std::less<>>
+void HeapSort(It begin, It end, Compare compare = Compare{}) {
+  for(auto it = std::next(begin, std::distance(begin, end)/2 - 1); it != std::prev(begin); --it) {
+    HeapSortHeapifyUtil(begin, it, end, compare);
+  }
+  for(auto it = std::prev(end); it != begin; --it) {
+    std::iter_swap(begin, it);
+    HeapSortHeapifyUtil(begin, begin, it, compare);
+  }
+}
+
 }  // namespace sort
