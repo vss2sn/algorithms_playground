@@ -70,9 +70,49 @@ void MergeSort(It begin, It end, Compare compare = Compare{}) {
     return;
   }
   auto mid = std::next(begin, dist/2);
-  MergeSort(begin, mid);
-  MergeSort(mid, end);
+  MergeSort(begin, mid, compare);
+  MergeSort(mid, end, compare);
   MergeSortMergeUtil(begin, mid, end, compare);
+}
+
+// template<typename It, typename Compare = std::less<>>
+// void MergeSortInPlaceUtil(It begin, It mid, It end, Compare compare = Compare{}){
+//   // auto begin_1 = begin;
+//   // auto begin_2 = mid;
+//   while(begin != mid && mid != end) {
+//     if(compare(*begin, *mid)) {
+//       ++begin;
+//     } else {
+//       // std::rotate(begin_1++, begin_2++, begin_2);
+//       std::copy_backward(begin++, mid++, mid);
+//       // std::advance(begin_1, 1);
+//       // std::advance(begin_2, 1);
+//     }
+//   }
+// }
+
+
+template<typename It, typename Compare = std::less<>>
+void MergeSortInPlaceUtil(It begin, It mid, It end, Compare compare = Compare{}){
+  while(begin != mid && mid != end) {
+    if(compare(*begin, *mid)) {
+      ++begin;
+    } else {
+      // std::rotate(begin++, mid, std::next(mid, 1));
+      std::copy_backward(begin++, mid, std::next(mid, 1));
+      ++mid;
+    }
+  }
+}
+
+template<typename It, typename Compare =  std::less<>>
+void MergeSortInPlace(It begin, It end, Compare compare = Compare{}) {
+  if(begin < std::prev(end, 1)) {
+    auto mid = std::next(begin, std::distance(begin, end)/2);
+    MergeSortInPlace(begin, mid, compare);
+    MergeSortInPlace(mid, end, compare);
+    MergeSortInPlaceUtil(begin, mid, end, compare);
+  }
 }
 
 template<typename It, typename Compare = std::less<>>

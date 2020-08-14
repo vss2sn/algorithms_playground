@@ -62,6 +62,16 @@ TEST_F(SortingTestRandomInt, MergeSortIter) {
   ASSERT_TRUE(std::is_sorted(to_sort.begin(), to_sort.end()));
 }
 
+TEST_F(SortingTestRandomInt, MergeSortInPlace) {
+  sort::MergeSortInPlace(to_sort);
+  ASSERT_TRUE(std::is_sorted(to_sort.begin(), to_sort.end()));
+}
+
+TEST_F(SortingTestRandomInt, MergeSortInPlaceIter) {
+  sort::MergeSortInPlace(to_sort.begin(), to_sort.end());
+  ASSERT_TRUE(std::is_sorted(to_sort.begin(), to_sort.end()));
+}
+
 TEST_F(SortingTestRandomInt, QuickSort) {
   sort::QuickSort(to_sort);
   ASSERT_TRUE(std::is_sorted(to_sort.begin(), to_sort.end()));
