@@ -587,6 +587,31 @@ std::vector<std::vector<int>> GraphAL::KosarajuAlgorithm() const {
   return g_al.KosarajuAlgorithmUtil();
 }
 
+bool GraphAL::StronglyConnectedKosarajuUtil() {
+  std::vector<bool> visited(v, false);
+  std::stack<int> visit_order;
+  DFSUtil(0, visited);
+
+  for(const auto& ele : visited) {
+    if(!ele) return false;
+  }
+
+  g = invertGraph();
+  std::fill(visited.begin(), visited.end(), false);
+  DFSUtil(0, visited);
+
+  for(const auto& ele : visited) {
+    if(!ele) return false;
+  }
+
+  return true;
+}
+
+bool GraphAL::StronglyConnectedKosaraju() const {
+  GraphAL g_al(g);
+  return g_al.StronglyConnectedKosarajuUtil();
+}
+
 } // namespace grahAL
 
 // using Pair = std::pair<int, double>;

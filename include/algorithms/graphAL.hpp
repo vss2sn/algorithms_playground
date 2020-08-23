@@ -41,7 +41,7 @@ private:
   void DFSUtilWithFinishTime(int source, std::vector<bool>& visited, std::stack<int>& visit_order) const;
 
   std::vector<std::vector<int>> KosarajuAlgorithmUtil();
-  // bool StronglyConnectedKosarajuUtil();
+  bool StronglyConnectedKosarajuUtil();
 
   std::vector<std::vector<std::pair<int, double>>> invertGraph() const  ;
 public:
@@ -83,9 +83,9 @@ public:
   // Find all strongly connected components of a graph
   virtual std::vector<std::vector<int>> KosarajuAlgorithm() const override;
 
-//   // Check if graph is strongly connected
-//   virtual bool StronglyConnectedKosaraju() const override;
-//
+  // Check if graph is strongly connected
+  virtual bool StronglyConnectedKosaraju() const override;
+
   // Creates minimum spanning tree for graph
   virtual std::vector<Edge> KruskalsAlgorithm() const override;
 //

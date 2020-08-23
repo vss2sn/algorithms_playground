@@ -53,22 +53,18 @@ using namespace std::chrono;
 using Pair = std::pair<int, double>;
 
 int main() {
-	std::vector<std::vector<Pair>> g_v(5, std::vector<Pair>());
-	g_v[0] = {std::make_pair(2,1), std::make_pair(3,1)};
+	std::vector<std::vector<Pair>> g_v(3, std::vector<Pair>());
+	g_v[0] = {std::make_pair(2,1), std::make_pair(1,1)};
 	g_v[1] = {std::make_pair(0,1)};
 	g_v[2] = {std::make_pair(1,1)};
-	g_v[3] = {std::make_pair(4,1)};
-	g_v[4] = {};
 
 	graphAL::GraphAL g_al(g_v);
-  const auto components = g_al.KosarajuAlgorithm();
-  for(auto& row : components) {
-    std::cout << "Connected component: ";
-    for(auto & element : row) {
-      std::cout << element;
-    }
-    std::cout << '\n';
-  }
+	  const auto strongly_connected = g_al.StronglyConnectedKosaraju();
+	  if(strongly_connected) {
+	    std::cout << "The graph is strongly connected" << '\n';
+	  } else {
+	    std::cout << "The graph is not strongly connected" << '\n';
+	  }
 
   return 0;
 }
