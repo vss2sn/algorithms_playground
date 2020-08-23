@@ -91,8 +91,8 @@ public:
 //   // Find minimum distance between every pair of points
 //   virtual std::vector<std::vector<double>> FloydWarshall() const override;
 //
-//   // Detect negative cycle
-//   virtual bool BellmanFord(const int source) const override;
+  // Detect negative cycle
+  virtual bool BellmanFord(const int source) const override;
 };
 
 }  // namespace graphAL

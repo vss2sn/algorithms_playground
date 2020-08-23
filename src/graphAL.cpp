@@ -503,6 +503,35 @@ std::tuple<bool, std::vector<int>> GraphAL::colourGraph(int n_c) const {
   return {true, colour};
 }
 
+bool GraphAL::BellmanFord(const int source) const {
+  std::vector<double> distances(v, std::numeric_limits<double>::max());
+  std::vector<double> predecessors(v, -1);
+
+  distances[source] = 0;
+
+  for(int k = 0; k < v; ++k) {
+    for(int i = 0; i < v; ++i) {
+      for(const auto& [end_vert, weight] : g[i]) {
+        if(double delta = distances[i] + weight; distances[end_vert] > delta) {
+          distances[end_vert] = delta;
+          predecessors[end_vert] = i;
+        }
+      }
+    }
+  }
+
+  for(int i = 0; i < v; ++i) {
+    for(const auto& [end_vert, weight] : g[i]) {
+      if(distances[end_vert] > distances[i] + weight) {
+        std::cout << __FUNCTION__ << __LINE__ << "Negative cycle detected" << '\n';
+        return true;
+      }
+    }
+  }
+
+  return true;
+}
+
 } // namespace grahAL
 
 // using Pair = std::pair<int, double>;
