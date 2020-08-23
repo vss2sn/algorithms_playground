@@ -53,12 +53,22 @@ using namespace std::chrono;
 using Pair = std::pair<int, double>;
 
 int main() {
-	std::vector<std::vector<Pair>> g_v(3, std::vector<Pair>(3));
-	g_v[0] = {std::make_pair(1,-5), std::make_pair(2,-4)};
-	g_v[1] = {std::make_pair(2,7)};
-	g_v[2] = {std::make_pair(1,8)};
+	std::vector<std::vector<Pair>> g_v(5, std::vector<Pair>());
+	g_v[0] = {std::make_pair(2,1), std::make_pair(3,1)};
+	g_v[1] = {std::make_pair(0,1)};
+	g_v[2] = {std::make_pair(1,1)};
+	g_v[3] = {std::make_pair(4,1)};
+	g_v[4] = {};
 
 	graphAL::GraphAL g_al(g_v);
-	auto found = g_al.BellmanFord(2);
+  const auto components = g_al.KosarajuAlgorithm();
+  for(auto& row : components) {
+    std::cout << "Connected component: ";
+    for(auto & element : row) {
+      std::cout << element;
+    }
+    std::cout << '\n';
+  }
+
   return 0;
 }

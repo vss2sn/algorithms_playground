@@ -532,6 +532,61 @@ bool GraphAL::BellmanFord(const int source) const {
   return true;
 }
 
+std::vector<std::vector<std::pair<int, double>>> GraphAL::invertGraph() const {
+  std::vector<std::vector<std::pair<int, double>>>  g_inv(v, std::vector<std::pair<int, double>>());
+  for(int i = 0; i < v; ++i) {
+    for(const auto& [end_vert, weight] : g[i]) {
+      g_inv[end_vert].push_back(std::make_pair(i, weight));
+    }
+  }
+  return g_inv;
+}
+
+void GraphAL::DFSUtilWithFinishTime(int source, std::vector<bool>& visited, std::stack<int>& visit_order) const{
+  visited[source] = true;
+  for(const auto& [end_vert, weights] : g[source]) {
+    if(!visited[end_vert]) {
+      DFSUtilWithFinishTime(end_vert, visited, visit_order);
+    }
+  }
+  visit_order.push(source);
+}
+
+std::vector<std::vector<int>> GraphAL::KosarajuAlgorithmUtil() {
+  std::vector<bool> visited(v, false);
+  std::stack<int> visit_order;
+  for(int i = 0; i < v; ++i) {
+    if(!visited[i]) {
+      DFSUtilWithFinishTime(i, visited, visit_order);
+    }
+  }
+
+  g = invertGraph();
+  std::fill(visited.begin(), visited.end(), false);
+
+  std::vector<std::vector<int>> components;
+  while(!visit_order.empty()) {
+    int vert = visit_order.top();
+    if(!visited[vert]) {
+      std::stack<int> component_stack;
+      std::vector<int> component_vector;
+      DFSUtilWithFinishTime(vert, visited, component_stack);
+      while(!component_stack.empty()) {
+        component_vector.push_back(component_stack.top());
+        component_stack.pop();
+      }
+      components.push_back(component_vector);
+    }
+    visit_order.pop();
+  }
+  return components;
+}
+
+std::vector<std::vector<int>> GraphAL::KosarajuAlgorithm() const {
+  GraphAL g_al(g);
+  return g_al.KosarajuAlgorithmUtil();
+}
+
 } // namespace grahAL
 
 // using Pair = std::pair<int, double>;

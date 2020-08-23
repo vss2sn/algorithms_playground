@@ -38,11 +38,12 @@ private:
   //     std::vector<std::vector<int>>& paths, std::vector<bool>& visited) const;
   //
   void PrintAllDijkstraPathsFound(const int source, const std::vector<std::pair<int, double>>& p_md) const;
-  // void DFSUtilWithFinishTime(int source, std::vector<bool>& visited, std::stack<int>& visit_order) const;
-  //
-  // std::vector<std::vector<int>> KosarajuAlgorithmUtil();
+  void DFSUtilWithFinishTime(int source, std::vector<bool>& visited, std::stack<int>& visit_order) const;
+
+  std::vector<std::vector<int>> KosarajuAlgorithmUtil();
   // bool StronglyConnectedKosarajuUtil();
 
+  std::vector<std::vector<std::pair<int, double>>> invertGraph() const  ;
 public:
   // GraphAL(const int V = 11, const bool random = true, const bool different_weights = true);
   // GraphAL(const GraphAL& g_am);
@@ -79,9 +80,9 @@ public:
   // Dijkstra from source to all possible points
   virtual std::tuple<bool, std::vector<std::pair<int, double>>> Dijkstra(const int source) const override;
 
-//   // Find all strongly connected components of a graph
-//   virtual std::vector<std::vector<int>> KosarajuAlgorithm() const override;
-//
+  // Find all strongly connected components of a graph
+  virtual std::vector<std::vector<int>> KosarajuAlgorithm() const override;
+
 //   // Check if graph is strongly connected
 //   virtual bool StronglyConnectedKosaraju() const override;
 //
@@ -93,6 +94,8 @@ public:
 //
   // Detect negative cycle
   virtual bool BellmanFord(const int source) const override;
+
+
 };
 
 }  // namespace graphAL
