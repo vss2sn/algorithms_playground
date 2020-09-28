@@ -1,0 +1,28 @@
+dist: xenial
+
+language: cpp
+
+compiler:
+  - gcc
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - libgtest-dev
+      - gcc-7
+      - g++-7
+      - cmake
+
+before_script:
+  - export CC=gcc-7
+  - export CXX=g++-7
+  - git submodule add https://github.com/google/googletest.git gtest
+  - mkdir build
+  - cd build
+  - cmake ..
+
+script:
+  - make
+  - make test

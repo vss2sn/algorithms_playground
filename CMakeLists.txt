@@ -33,7 +33,7 @@ set_target_properties(algorithms_library
 add_executable(play ${CMAKE_CURRENT_SOURCE_DIR}/main/main.cpp)
 target_link_libraries(play PRIVATE algorithms_library)
 
-option(RUN_TESTS "RUN_TESTS" OFF)
+option(RUN_TESTS "RUN_TESTS" ON)
 if(RUN_TESTS)
   add_subdirectory(test)
   enable_testing()
