@@ -139,8 +139,8 @@ std::tuple<bool, std::vector<Edge>> GraphAM::Prim() const {
   for(int i =0; i < v; i++) {
     for (int j = i+1; j < v; j++) {
       if(g[i][j] != g[j][i]) {
-        std::cout << "Edge from " << i << " to " << j << " not symetric/undirected. \
-        Prim's algorithm  will fail. " << '\n';
+        std::cout << "Edge from " << i << " to " << j <<
+        " not symetric/undirected. Prim's algorithm  will fail. " << '\n';
         return {false, std::vector<Edge>()};
       }
     }
@@ -166,7 +166,7 @@ std::tuple<bool, std::vector<Edge>> GraphAM::Prim() const {
   // Insert current vertex
   for (int i = 0; i< v; i++) {
     if( g[source][i] != 0) {
-      if (i!=source) edge_pq.push(Edge(source, i, g[source][i]));
+      if (i!=source) edge_pq.push({source, i, g[source][i]});
     }
   }
 
@@ -180,7 +180,7 @@ std::tuple<bool, std::vector<Edge>> GraphAM::Prim() const {
       mst.emplace_back(e);
       for (int i = 0; i< v; i++) {
         if( g[e.v][i] != 0 && parent[i] == -1 ) {
-          edge_pq.push(Edge(e.v, i, g[e.v][i]));
+          edge_pq.push({e.v, i, g[e.v][i]});
         }
       }
     }
@@ -482,14 +482,20 @@ std::tuple<bool, double, std::vector<int>> GraphAM::Dijkstra(const int source, c
     int cv = sink;
     double path_cost = 0;
     std::vector<int> path;
+    path_cost = p_md[cv].second;
     while(cv!=source) {
       path.push_back(cv);
       cv = p_md[cv].first;
-      path_cost += p_md[cv].second;
     }
     path.push_back(source);
     std::reverse(path.begin(), path.end());
     std::cout << __FUNCTION__ << "Path found between " << source << ' ' << sink << '\n';
+    std::cout << __FUNCTION__ << "Path cost: " << path_cost << '\n';
+    std::cout << __FUNCTION__ << "Path: ";
+    // for(const auto & p : path) {
+    //   std::cout << p << ' ';
+    // }
+    // std::cout << '\n';
     return {found_path, path_cost, path};
   }
 }
@@ -647,7 +653,7 @@ std::vector<Edge> GraphAM::KruskalsAlgorithm() const {
   for(int i=-0; i<v;i++) {
     for(int j = 0; j<v; j++){
       if(g[i][j]!=0) {
-        pq.push(Edge(i, j, g[i][j]));
+        pq.push({i, j, g[i][j]});
       }
     }
   }
@@ -725,181 +731,3 @@ bool GraphAM::BellmanFord(const int source) const {
 }
 
 } // namespace graphAM
-
-
-// int main () {
-//
-//   // Common graph for most of the tests below
-//   graphAM::GraphAM g_am;
-//
-//   // Test random distribution
-//   std::binomial_distribution<> dist(1,0.2);
-//   graphAM::GraphAM g1(11, dist);
-//   std::cout << "Test random distribution " << '\n';
-//   g1.PrintGraph();
-//
-//   // Random with different weights
-//   graphAM::GraphAM g2(11, true, true);
-//   std::cout << "Test graph with different_weights " << '\n';
-//   g2.PrintGraph();
-//
-//   // Random with same weights
-//   graphAM::GraphAM g3(11, true, false);
-//   std::cout << "Test graph with same weights " << '\n';
-//   g3.PrintGraph();
-//
-//   // Empty graph
-//   graphAM::GraphAM g4(11, false);
-//   std::cout << "Test empty graph " << '\n';
-//   g4.PrintGraph();
-//
-//   // No argumenmts specified
-//   graphAM::GraphAM g5;
-//   std::cout << "Test no arguments specified " << '\n';
-//   g5.PrintGraph();
-//
-//   // Test for BFS/DFS/Prim
-//   std::vector<std::vector<double>> g = {
-//     { 1, 1, 1, 0, 0 },
-//     { 0, 1, 1, 0, 0 },
-//     { 0, 0, 1, 1, 0 },
-//     { 0, 0, 0, 1, 1 },
-//     { 0, 0, 0, 0, 1 },
-//   };
-//
-//   g_am = graphAM::GraphAM(g);
-//   auto [path_found_bfs, path_bfs] = g_am.BFS(0, 4);
-//   if(path_found_bfs){
-//     std::cout << "Path: " << '\n';
-//     for(const auto& ele : path_bfs) std::cout << ele << "   ";
-//     std::cout << '\n';
-//   } else {
-//     std::cout << "No path found" << '\n';
-//   }
-//
-//   auto [path_found_dfs, path_dfs] = g_am.DFS(0, 4);
-//   if(path_found_dfs){
-//     std::cout << "Path: " << '\n';
-//     for(const auto& ele : path_dfs) std::cout << ele << "   ";
-//     std::cout << '\n';
-//   } else {
-//     std::cout << "No path found" << '\n';
-//   }
-//
-//   // Test for Prim
-//   auto found_prim = g_am.Prim();
-//
-//   g = {
-//     {0, 16, 13, 0, 0, 0},
-//     {0, 0, 10, 12, 0, 0},
-//     {0, 4, 0, 0, 14, 0},
-//     {0, 0, 9, 0, 0, 20},
-//     {0, 0, 0, 7, 0, 4},
-//     {0, 0, 0, 0, 0, 0}
-//   };
-//
-//   g_am = graphAM::GraphAM(g);
-//   double flow = g_am.fordFulkerson(0, 5);
-//   std::cout << "Flow from source to sink: " << flow << '\n';
-//
-//   // Test for mother vertex
-//   g = {
-//     {0, 1, 1, 0, 0, 0, 0},
-//     {0, 0, 0, 1, 0, 0, 0},
-//     {0, 0, 0, 0, 0, 0, 0},
-//     {0, 0, 0, 0, 0, 0, 0},
-//     {0, 1, 0, 0, 0, 0, 0},
-//     {0, 0, 1, 0, 0, 0, 1},
-//     {1, 0, 0, 0, 1, 0, 0}
-//   };
-//
-//   g_am = graphAM::GraphAM(g);
-//   auto [mother_vertex_found, mv] = g_am.FindMotherVertex();
-//
-//   // Test for UnionFind and UnionFindRC
-//   g = {
-//     {0, 1, 1, 0, 0, 0},
-//     {0, 0, 0, 1, 0, 0},
-//     {0, 0, 0, 0, 1, 0},
-//     {0, 0, 0, 0, 0, 1},
-//     {0, 0, 0, 0, 0, 1},
-//     {0, 0, 0, 0, 0, 0}
-//   };
-//
-//   g_am = graphAM::GraphAM(g);
-//   bool cycle_found = g_am.UnionFindRCDetectCycle();
-//   std::cout << "Cycle found in graph: " << cycle_found << '\n';
-//
-//   // Test for allPathsBetween
-//   g = {
-//     {0, 1, 1, 0, 0, 0},
-//     {1, 0, 1, 0, 0, 1},
-//     {1, 1, 0, 1, 1, 1},
-//     {0, 0, 1, 0, 1, 1},
-//     {0, 0, 1, 1, 0, 1},
-//     {0, 1, 1, 1, 1, 0}
-//   };
-//
-//   g_am = graphAM::GraphAM(g);
-//   auto [paths_found, paths] = g_am.allPathsBetween(0, 5);
-//
-//   // Test for colourGraph
-//   std::vector<std::vector<double>> g = {
-//     {0, 1, 1, 0, 0, 0},
-//     {1, 0, 1, 0, 0, 1},
-//     {1, 1, 0, 1, 1, 1},
-//     {0, 0, 1, 0, 1, 1},
-//     {0, 0, 1, 1, 0, 1},
-//     {0, 1, 1, 1, 1, 0}
-//   };
-//
-//   g_am = graphAM::GraphAM(g);
-//   auto [coloured, colours] = g_am.colourGraph(4);
-//
-// g = {
-//    {0, 1, 1, 0, 0, 0},
-//    {1, 0, 1, 0, 0, 0},
-//    {1, 1, 0, 1, 1, 0},
-//    {0, 0, 1, 0, 1, 0},
-//    {0, 0, 1, 1, 0, 1},
-//    {0, 1, 1, 1, 1, 0}
-//   };
-//
-//   g_am = graphAM::GraphAM(g);
-//   // const auto[path_found, path_cost, path] = g_am.Dijkstra(0, 5);
-//   const auto[path_found, p_md] = g_am.Dijkstra(0);
-//
-//   g = {
-//    {0, 0, 1, 1, 0},
-//    {1, 0, 0, 0, 0},
-//    {0, 1, 0, 0, 0},
-//    {0, 0, 0, 0, 1},
-//    {0, 0, 0, 0, 0},
-//   };
-//   g_am = graphAM::GraphAM(g);
-//   const auto components = g_am.KosarajuAlgorithm();
-//   for(auto& row : components) {
-//     std::cout << "Connected component: ";
-//     for(auto & element : row) {
-//       std::cout << element;
-//     }
-//     std::cout << '\n';
-//   }
-//
-//   g = {
-//    {0, 0, 1, 1, 0},
-//    {1, 0, 0, 0, 0},
-//    {1, 1, 0, 0, 0},
-//    {1, 0, 0, 0, 1},
-//    {0, 0, 0, 1, 0},
-//   };
-//   g_am = graphAM::GraphAM(g);
-//   const auto strongly_connected = g_am.StronglyConnectedKosaraju();
-//   if(strongly_connected) {
-//     std::cout << "The graph is strongly connected" << '\n';
-//   } else {
-//     std::cout << "The graph is not strongly connected" << '\n';
-//   }
-//
-//   return 0;
-// }

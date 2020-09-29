@@ -133,7 +133,7 @@ std::tuple<bool, std::vector<Edge>> GraphAL::Prim() const {
   parent[source] = source;
 
   for(const auto& [end_vert, weight] : g[source]) {
-    pq.push(Edge(source, end_vert, weight));
+    pq.push({source, end_vert, weight});
   }
 
   std::vector<Edge> mst;
@@ -144,7 +144,7 @@ std::tuple<bool, std::vector<Edge>> GraphAL::Prim() const {
       parent[current_edge.v] = current_edge.u;
       mst.push_back(current_edge);
       for(const auto& [end_vert, weight] : g[current_edge.v]) {
-        pq.push(Edge(current_edge.v, end_vert, weight));
+        pq.push({current_edge.v, end_vert, weight});
       }
     }
   }
@@ -205,7 +205,7 @@ std::vector<Edge> GraphAL::KruskalsAlgorithm() const {
   std::priority_queue<Edge, std::vector<Edge>, EdgeCompare> edge_pq;
   for(int start_vert = 0; start_vert < v; start_vert++) {
     for(const auto& [end_vert, weight] : g[start_vert]) {
-      edge_pq.push(Edge(start_vert, end_vert, weight));
+      edge_pq.push({start_vert, end_vert, weight});
     }
   }
 

@@ -31,9 +31,18 @@ set_target_properties(algorithms_library
 )
 
 add_executable(play ${CMAKE_CURRENT_SOURCE_DIR}/main/main.cpp)
+
+set_target_properties(play
+  PROPERTIES
+    CXX_STANDARD 17
+    CXX_STANDARD_REQUIRED YES
+    CXX_EXTENSIONS NO
+    CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wall -Werror"
+)
+
 target_link_libraries(play PRIVATE algorithms_library)
 
-option(RUN_TESTS "RUN_TESTS" ON)
+option(RUN_TESTS "RUN_TESTS" OFF)
 if(RUN_TESTS)
   add_subdirectory(test)
   enable_testing()

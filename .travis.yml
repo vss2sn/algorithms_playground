@@ -18,7 +18,11 @@ addons:
 before_script:
   - export CC=gcc-7
   - export CXX=g++-7
-  - git submodule add https://github.com/google/googletest.git gtest
+  - cd /usr/src/gtest
+  - sudo cmake CMakeLists.txt
+  - sudo make
+  - sudo cp *.a /usr/lib
+  - cd -
   - mkdir build
   - cd build
   - cmake ..

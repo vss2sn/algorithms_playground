@@ -21,3 +21,4 @@ function(add_test_file TEST_SOURCE)
 endfunction()
 
 add_test_file(${CMAKE_CURRENT_SOURCE_DIR}/src/sorting_tests.cpp)
+add_test_file(${CMAKE_CURRENT_SOURCE_DIR}/src/graphAM_tests.cpp)

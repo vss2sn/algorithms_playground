@@ -2,23 +2,8 @@
 
 #include "algorithms/graph.hpp"
 
-Edge::Edge(int u, int v, double w) {
-  this->u = u;
-  this->v = v;
-  this->w = w;
-}
-
-bool Edge::operator < (const Edge& other) const {
-  return w < other.w;
-}
-bool Edge::operator <= (const Edge& other) const {
-  return w <= other.w;
-}
-bool Edge::operator > (const Edge& other) const {
-  return w > other.w;
-}
-bool Edge::operator >= (const Edge& other) const {
-  return w >= other.w;
+bool Edge::operator == (const Edge& e2) const {
+  return (this->u == e2.u && this->v == e2.v && this->w == e2.w);
 }
 
 void Graph::PrintGraph() const {

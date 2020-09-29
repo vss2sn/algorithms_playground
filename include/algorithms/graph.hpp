@@ -8,12 +8,7 @@ struct Edge {
   int u, v;
   double w;
 
-  Edge(int u, int v, double w);
-  bool operator < (const Edge& other) const;
-  bool operator <= (const Edge& other) const;
-  bool operator > (const Edge& other) const;
-  bool operator >= (const Edge& other) const;
-
+  bool operator == (const Edge& e2) const;
 };
 
 class Graph {
