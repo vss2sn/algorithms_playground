@@ -16,7 +16,7 @@ function(add_test_file TEST_SOURCE)
   )
   target_sources(${test_file_executable} PRIVATE ${TEST_SOURCE})
   target_include_directories(${test_file_executable} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${GTEST_INCLUDE_DIRS} )
-  target_link_libraries(${test_file_executable} PRIVATE algorithms_library gtest gtest_main Threads::Threads )
+  target_link_libraries(${test_file_executable} PRIVATE algorithms_library ${GTEST_LIBRARIES} Threads::Threads )
   add_test(${test_file_executable} ${test_file_executable})
 endfunction()
 
