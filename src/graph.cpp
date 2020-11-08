@@ -100,3 +100,8 @@ std::vector<std::vector<double>> Graph::FloydWarshall() const {
    std::cout << __FUNCTION__ << " not yet defined" << '\n';
    return false;
 }
+
+std::vector<int> Graph::HierholzersAlgorithm() const {
+  std::cout << __FUNCTION__ << " not yet defined" << '\n';
+  return std::vector<int>();
+}

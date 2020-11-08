@@ -44,6 +44,9 @@ private:
   bool StronglyConnectedKosarajuUtil();
 
   std::vector<std::vector<std::pair<int, double>>> invertGraph() const  ;
+
+  std::vector<int> HierholzersAlgorithmUtil();
+  
 public:
   // GraphAL(const int V = 11, const bool random = true, const bool different_weights = true);
   // GraphAL(const GraphAL& g_am);
@@ -95,6 +98,8 @@ public:
   // Detect negative cycle
   virtual bool BellmanFord(const int source) const override;
 
+  // Find Eulerian Path
+  virtual std::vector<int> HierholzersAlgorithm() const override;
 
 };
 

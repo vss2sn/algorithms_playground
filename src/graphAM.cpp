@@ -730,4 +730,105 @@ bool GraphAM::BellmanFord(const int source) const {
   return false;
 }
 
+std::vector<int> GraphAM::HierholzersAlgorithmUtil() {
+  // check degrees
+  std::vector<int> indeg(v, 0), outdeg(v, 0);
+  for(int i = 0 ; i < v; i++) {
+    for(int j = 0; j < v; j++) {
+      if (g[i][j] != 0) {
+        ++indeg[j];
+        ++outdeg[i];
+      }
+    }
+  }
+
+  // start vertex
+  int first  = 0;
+  while(first < v && !indeg[first]) {
+    ++ first;
+  }
+  if(first == v) {
+    std::cout << "The are no edges in this graph" << '\n';
+    return std::vector<int>();
+  }
+
+  // check if at maximum only 2 vertices have indeg != outdeg and if so, connect them
+
+  int v1 = -1, v2 = -1, diff = 0;
+  for(int i = 0; i < v; i++) {
+    if(indeg[i] - outdeg[i] != 0) {
+      if(v1 == -1) {
+        v1 = i;
+      } else if (v2 == -1) {
+        v2 = i;
+      }
+      else {
+        std::cout << "There exist more than 2 vertices for which the in degree is not equal to the out degree" << '\n';
+        return std::vector<int>();
+      }
+    }
+  }
+
+  if(v1 != -1) {
+    if(indeg[v1] - outdeg[v1] > 0) {
+      g[v1][v2] = 1;
+    } else {
+      g[v2][v1] = 1;
+    }
+  }
+
+  std::stack<int> vertices; // vertices to expand
+  std::vector<int> eulerian_path;
+  vertices.push(first);
+
+  while(!vertices.empty()) {
+    const int edge_start = vertices.top();
+    int edge_end;
+    for(edge_end = 0; edge_end < v; edge_end++) {
+      if(g[edge_start][edge_end] != 0) {
+        break;
+      }
+    }
+    if(edge_end == v) {
+      eulerian_path.push_back(edge_start);
+      vertices.pop();
+    } else {
+      g[edge_start][edge_end] = 0;
+      vertices.push(edge_end);
+    }
+  }
+
+  // remove added edge if added
+  if(v1 != -1) {
+    const int s1 = eulerian_path.size() - 1;
+    for(int i = 0; i < s1; i++) {
+      if((eulerian_path[i] == v1 && eulerian_path[i+1] == v2) ||
+         (eulerian_path[i] == v2 && eulerian_path[i+1] == v1)) {
+        eulerian_path.pop_back();
+        std::rotate(std::begin(eulerian_path), std::next(std::begin(eulerian_path), i), std::end(eulerian_path));
+        break;
+      }
+    }
+  }
+
+  // check whether any edge remains
+  // TODO: check when this is required
+  for(const auto& row:g) {
+    for(const auto& ele : row) {
+      if(ele != 0) {
+        std::cout << "There is an edge left" << '\n';
+        return std::vector<int>();
+      }
+    }
+  }
+
+  std::reverse(eulerian_path.begin(), eulerian_path.end());
+  return eulerian_path;
+}
+
+std::vector<int> GraphAM::HierholzersAlgorithm() const {
+  GraphAM mod(g);
+  return mod.HierholzersAlgorithmUtil();
+}
+
 } // namespace graphAM

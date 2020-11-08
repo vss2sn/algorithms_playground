@@ -57,6 +57,9 @@ public:
 
   // Detect negative cycle
   virtual bool BellmanFord(const int source) const;
+
+  // Find Eulerian Paths
+  virtual std::vector<int> HierholzersAlgorithm() const;
 };
 
 #endif  // GRAPH_HPP

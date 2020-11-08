@@ -8,9 +8,31 @@
 #include "algorithms/sort_iter.hpp"
 
 int main() {
-	std::vector<int> to_sort{10,8,9,3,5,6,1,4,2,7};
-	sort::HeapSort(to_sort.begin(),to_sort.end());
-	for(const auto& ele : to_sort) {
+	// std::vector<std::vector<double>> gv = {
+	//     { 0, 1, 0, 0, 0, 0, 1},
+	//     { 0, 0, 1, 0, 0, 0, 0},
+	//     { 1, 0, 0, 1, 0, 0, 0},
+	//     { 0, 0, 0, 0, 1, 0, 0},
+	//     { 0, 0, 1, 0, 0, 1, 0},
+	// 		{ 1, 0, 0, 0, 0, 0, 0},
+	// 		{ 0, 0, 0, 1, 1, 0, 0},
+	//   };
+	// graphAM::GraphAM g(gv);
+
+	std::vector<std::vector<std::pair<int, double>>> adj2(7);
+  adj2[0].push_back(std::make_pair<int, double>(1, 1));
+  adj2[0].push_back(std::make_pair<int, double>(6, 1));
+  adj2[1].push_back(std::make_pair<int, double>(2, 1));
+  adj2[2].push_back(std::make_pair<int, double>(0, 1));
+  adj2[2].push_back(std::make_pair<int, double>(3, 1));
+  adj2[3].push_back(std::make_pair<int, double>(4, 1));
+  adj2[4].push_back(std::make_pair<int, double>(2, 1));
+  adj2[4].push_back(std::make_pair<int, double>(5, 1));
+  adj2[5].push_back(std::make_pair<int, double>(0, 1));
+  adj2[6].push_back(std::make_pair<int, double>(4, 1));
+  graphAL::GraphAL g(adj2);
+	const auto path = g.HierholzersAlgorithm();
+	for(const auto& ele : path) {
 		std::cout << ele << ' ';
 	}
 	std::cout << '\n';
