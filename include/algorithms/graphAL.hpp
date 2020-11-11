@@ -46,7 +46,10 @@ private:
   std::vector<std::vector<std::pair<int, double>>> invertGraph() const  ;
 
   std::vector<int> HierholzersAlgorithmUtil();
-  
+
+  void ArticulationPointsUtil(const int vert1, std::vector<bool>& visited, std::vector<int>& parent,
+    std::vector<int>& tod, std::vector<int>& low, std::unordered_set<int>& articulation_points, int time) const ;
+
 public:
   // GraphAL(const int V = 11, const bool random = true, const bool different_weights = true);
   // GraphAL(const GraphAL& g_am);
@@ -100,6 +103,10 @@ public:
 
   // Find Eulerian Path
   virtual std::vector<int> HierholzersAlgorithm() const override;
+
+  // Find articulation points in an undirected graph
+  virtual std::unordered_set<int> ArticulationPoints() const override;
+
 
 };
 

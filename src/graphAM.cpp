@@ -5,6 +5,7 @@
 #include <random>
 #include <stack>
 #include <tuple>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -830,5 +831,62 @@ std::vector<int> GraphAM::HierholzersAlgorithm() const {
   GraphAM mod(g);
   return mod.HierholzersAlgorithmUtil();
 }
+
+void GraphAM::ArticulationPointsUtil(const int vert1, std::vector<bool>& visited, std::vector<int>& parent,
+  std::vector<int>& tod, std::vector<int>& low, std::unordered_set<int>& articulation_points, int time) const {
+    int children = 0;
+    visited[vert1] = true;
+    tod[vert1] = low[vert1] = ++time;
+    for(int vert2 = 0; vert2 < v; ++vert2) {
+      if(g[vert1][vert2] == 0) continue;
+      if(!visited[vert2]) {
+        ++children;
+        parent[vert2] = vert1;
+        ArticulationPointsUtil(vert2, visited, parent, tod, low, articulation_points, time);
+        low[vert1] = std::min(low[vert1], low[vert2]);
+        if(low[vert2] >= tod[vert1] && parent[vert1] != -1) {
+          articulation_points.insert(vert1);
+        }
+      } else {
+        low[vert1] = std::min(low[vert1], tod[vert2]);
+      }
+    }
+    if(parent[vert1] == -1 && children > 1) {
+      articulation_points.insert(vert1);
+    }
+}
+
+
+std::unordered_set<int> GraphAM::ArticulationPoints() const {
+
+  // While this algorithm will correctly find all teh articulation points as long as
+  // for each edge between 2 vertices there exists an edge runnin in the opposite direction
+  // regardless of weight, this algorithm returns when the graph is not symetric to emphasize
+  // the fact that this algorithm is meant to be run n undirected graphs
+  for(int i = 0; i < v; i++) {
+    for (int j = i+1; j < v; j++) {
+      if(g[i][j] != g[j][i]) {
+        std::cout << "Edge from " << i << " to " << j <<
+        " not symetric. The algorithm will fail. " << '\n';
+        return std::unordered_set<int>();
+      }
+    }
+  }
+
+  std::vector<bool> visited(v, false);
+  std::vector<int> parent(v, -1);
+  std::vector<int> tod(v, std::numeric_limits<int>::max()); // time of discovery
+  std::vector<int> low(v, std::numeric_limits<int>::max());
+  std::unordered_set<int> articulation_points;
+  int time = 0;
+
+  for(int i = 0; i < v; ++i) {
+    if(!visited[i]) {
+      ArticulationPointsUtil(i, visited, parent, tod, low, articulation_points, time);
+    }
+  }
+  return articulation_points;
+}
+
 
 } // namespace graphAM

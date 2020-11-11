@@ -2,6 +2,7 @@
 #define GRAPH_HPP
 
 #include <tuple>
+#include <unordered_set>
 #include <vector>
 
 struct Edge {
@@ -60,6 +61,10 @@ public:
 
   // Find Eulerian Paths
   virtual std::vector<int> HierholzersAlgorithm() const;
+
+  // Find articulation points in an undirected graph
+  virtual std::unordered_set<int> ArticulationPoints() const;
+
 };
 
 #endif  // GRAPH_HPP

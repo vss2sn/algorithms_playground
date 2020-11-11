@@ -5,6 +5,7 @@
 #include <random>
 #include <stack>
 #include <tuple>
+#include <unordered_set>
 #include <vector>
 
 #include "algorithms/graph.hpp"
@@ -48,6 +49,9 @@ private:
   bool StronglyConnectedKosarajuUtil();
 
   std::vector<int> HierholzersAlgorithmUtil();
+
+  void ArticulationPointsUtil(const int vert1, std::vector<bool>& visited, std::vector<int>& parent,
+    std::vector<int>& tod, std::vector<int>& low, std::unordered_set<int>& articulation_points, int time) const ;
 
 public:
   GraphAM(const int V = 11, const bool random = true, const bool different_weights = true);
@@ -102,6 +106,9 @@ public:
 
   // Find Eulerian Path
   virtual std::vector<int> HierholzersAlgorithm() const override;
+
+  // Find articulation points in an undirected graph
+  virtual std::unordered_set<int> ArticulationPoints() const override;
 
 };
 

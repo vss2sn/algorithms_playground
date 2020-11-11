@@ -709,6 +709,72 @@ std::vector<int> GraphAL::HierholzersAlgorithm() const {
   return mod.HierholzersAlgorithmUtil();
 }
 
+void GraphAL::ArticulationPointsUtil(const int vert1, std::vector<bool>& visited, std::vector<int>& parent,
+  std::vector<int>& tod, std::vector<int>& low, std::unordered_set<int>& articulation_points, int time) const {
+  int children = 0;
+  visited[vert1] = true;
+  low[vert1] = tod[vert1] = ++time;
+  const int n_edges = g[vert1].size();
+  for(int j = 0; j < n_edges; j++) {
+    const auto [vert2, edge_weight] = g[vert1][j];
+    if(!visited[j]) {
+      ++children;
+      parent[vert2] = vert1;
+      ArticulationPointsUtil(vert2, visited, parent, tod, low, articulation_points, time);
+      low[vert1] = std::min(low[vert1], low[vert2]);
+      if(low[vert1] >= tod[vert2] && parent[vert1] != -1) {
+        articulation_points.insert(vert1);
+      } else {
+        low[vert1] = std::min(low[vert1], tod[vert2]);
+      }
+    }
+    if(parent[vert1] != -1 && children > 1) {
+      articulation_points.insert(vert1);
+    }
+  }
+}
+
+std::unordered_set<int> GraphAL::ArticulationPoints() const {
+
+  // While this algorithm will correctly find all teh articulation points as long as
+  // for each edge between 2 vertices there exists an edge runnin in the opposite direction
+  // regardless of weight, this algorithm returns when the graph is not symetric to emphasize
+  // the fact that this algorithm is meant to be run n undirected graphs
+  for (int vert1 = 0; vert1 < v; ++vert1) {
+    for(int j = 0; j <  g[vert1].size(); ++j) {
+      const auto [vert2, edge_weight2] = g[vert1][j];
+      bool found = false;
+      for(const auto& [vert3, edge_weight3] : g[vert2]) {
+        if(vert3 == vert1 && edge_weight3 == edge_weight2) {
+          found= true;
+          break;
+        }
+      }
+      if(found == false) {
+        std::cout << "Edge from " << vert1 << " to " << vert2 <<
+        " not symetric. The algorithm will fail. " << '\n';
+        return std::unordered_set<int>();
+      }
+    }
+  }
+
+  std::vector<bool> visited(v, false);
+  std::vector<int> parent(v, -1);
+  std::vector<int> tod(v, std::numeric_limits<int>::max());
+  std::vector<int> low(v, std::numeric_limits<int>::max());
+  std::unordered_set<int> articulation_points;
+  int time = 0;
+
+  for(int i = 0; i < v; i++) {
+    if(!visited[i]) {
+      ArticulationPointsUtil(i, visited, parent, tod, low, articulation_points, time);
+    }
+  }
+
+  return articulation_points;
+}
+
+
 } // namespace grahAL
 
 // using Pair = std::pair<int, double>;

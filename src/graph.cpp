@@ -105,3 +105,8 @@ std::vector<int> Graph::HierholzersAlgorithm() const {
   std::cout << __FUNCTION__ << " not yet defined" << '\n';
   return std::vector<int>();
 }
+
+std::unordered_set<int> Graph::ArticulationPoints() const {
+  std::cout << __FUNCTION__ << " not yet defined" << '\n';
+  return std::unordered_set<int>();
+}
