@@ -57,6 +57,8 @@ private:
     std::vector<bool>& visited, std::vector<bool>& this_cycle,
     const int vert) const;
 
+  void FindBridgesUtil(const int vert1, std::vector<bool>& visited, std::vector<int>& parent,
+    std::vector<int>& tod, std::vector<int>& low, std::vector<std::pair<int, int>>& bridges, int time) const;
 public:
   GraphAM(const int V = 11, const bool random = true, const bool different_weights = true);
   GraphAM(const GraphAM& g_am);
@@ -117,6 +119,7 @@ public:
   // Topological sort (checks whether the graph is a directed acyclic as well)
   virtual std::tuple<bool, std::vector<int>> TopologicalSort() const override;
 
+  virtual std::vector<std::pair<int, int>> FindBridges() const override;
 };
 
 /* ------------------------------- */

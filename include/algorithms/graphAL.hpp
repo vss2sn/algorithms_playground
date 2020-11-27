@@ -114,6 +114,7 @@ public:
   // Topological sort (checks whether the graph is a directed acyclic as well)
   virtual std::tuple<bool, std::vector<int>> TopologicalSort() const override;
 
+  virtual std::vector<std::pair<int, int>> FindBridges() const override;
 };
 
 }  // namespace graphAL

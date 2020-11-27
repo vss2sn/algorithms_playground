@@ -9,23 +9,18 @@
 
 int main() {
 	std::vector<std::vector<double>> gv = {
-	    { 0, 3, 5, 0},
-	    { 0, 0, 0, 7},
+	    { 0, 1, 0, 0},
+	    { 1, 0, 0, 0},
 	    { 0, 0, 0, 1},
-	    { 0, 0, 0, 0}
+	    { 0, 0, 1, 0}
 	  };
 	graphAM::GraphAM g(gv);
 
-	// std::vector<std::vector<std::pair<int, double>>> gv = {
-	// 		{ {1,1}, {2, 1} },
-	// 		{},
-	// 		{ {1,1} },
-	// 		{ {1,1}, {2, 1}, {4, 1} },
-	// 		{ {1,1}, {2, 1} },
-	// 	};
-	// graphAL::GraphAL g(gv);
-
-	std::cout << g.fordFulkerson(0, 3) << '\n';
+	std::vector<std::pair<int, int>> ans =  g.FindBridges();
+	std::cout << "Bridges:" << '\n';
+	for(const auto& bridge : ans) {
+		std::cout << bridge.first << ' ' << bridge.second << '\n';
+	}
 
 	return 0;
 }

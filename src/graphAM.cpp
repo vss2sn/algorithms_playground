@@ -838,7 +838,7 @@ void GraphAM::ArticulationPointsUtil(const int vert1, std::vector<bool>& visited
     visited[vert1] = true;
     tod[vert1] = low[vert1] = ++time;
     for(int vert2 = 0; vert2 < v; ++vert2) {
-      if(g[vert1][vert2] == 0) continue;
+      if(g[vert1][vert2] == 0) continue; // check if this should also check for parent
       if(!visited[vert2]) {
         ++children;
         parent[vert2] = vert1;
@@ -924,6 +924,53 @@ std::tuple<bool, std::vector<int>> GraphAM::TopologicalSort() const {
   }
   std::reverse(sorted.begin(), sorted.end());
   return {true, sorted};
+}
+
+void GraphAM::FindBridgesUtil(const int vert1, std::vector<bool>& visited, std::vector<int>& parent,
+  std::vector<int>& tod, std::vector<int>& low, std::vector<std::pair<int, int>>& bridges, int time) const {
+  visited[vert1] = true;
+  low[vert1] = tod[vert1] = time++;
+  for(int vert2 = 0; vert2 < v; ++vert2) {
+    if(g[vert1][vert2] == 0 || parent[vert1] == vert2) continue;
+    if(!visited[vert2]) {
+      parent[vert2] = vert1;
+      FindBridgesUtil(vert2, visited, parent, tod, low, bridges, time);
+      low[vert1] = std::min(low[vert1], low[vert2]);
+      if(low[vert2] > tod[vert1]) {
+        bridges.emplace_back(vert1, vert2);
+      }
+    } else {
+      low[vert1] = std::min(low[vert1], tod[vert2]);
+    }
+  }
+}
+
+std::vector<std::pair<int, int>> GraphAM::FindBridges() const {
+
+  for(int i = 0; i < v; i++) {
+    for (int j = i+1; j < v; j++) {
+      if(g[i][j] != g[j][i]) {
+        std::cout << "Edge from " << i << " to " << j <<
+        " not symetric. The algorithm will fail. " << '\n';
+        return std::vector<std::pair<int, int>> ();
+      }
+    }
+  }
+
+  int time = 0;
+  std::vector<bool> visited(v, false);
+  std::vector<int> parent(v, -1);
+  std::vector<int> tod(v, std::numeric_limits<int>::max());
+  std::vector<int> low(v, std::numeric_limits<int>::max());
+  std::vector<std::pair<int, int>> bridges;
+
+  for(int i = 0; i < v; ++i) {
+    if(!visited[i]) {
+      FindBridgesUtil(i, visited, parent, tod, low, bridges, time);
+    }
+  }
+
+  return bridges;
 }
 
 } // namespace graphAM

@@ -156,6 +156,9 @@ public:
    * @details checks whether the graph is a directed acyclic as well
    */
   virtual std::tuple<bool, std::vector<int>> TopologicalSort() const;
+
+  virtual std::vector<std::pair<int, int>> FindBridges() const;
+
 };
 
 #endif  // GRAPH_HPP
