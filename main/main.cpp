@@ -8,21 +8,35 @@
 #include "algorithms/sort_iter.hpp"
 
 int main() {
-	std::vector<std::vector<double>> gv = {
-	    { 0, 1, 1, 1, 0},
-	    { 1, 0, 1, 0, 0},
-	    { 1, 1, 0, 0, 0},
-	    { 1, 0, 0, 0, 1},
-	    { 0, 0, 0, 1, 0},
-	  };
-	graphAM::GraphAM g(gv);
+	// std::vector<std::vector<double>> gv = {
+	//     { 0, 1, 1, 0, 0},
+	//     { 0, 0, 0, 0, 0},
+	//     { 0, 1, 0, 0, 0},
+	//     { 0, 1, 1, 0, 1},
+	//     { 0, 1, 1, 0, 0},
+	//   };
+	// graphAM::GraphAM g(gv);
 
-	auto articulation_points = g.ArticulationPoints();
+	std::vector<std::vector<std::pair<int, double>>> gv = {
+			{ {1,1}, {2, 1} },
+			{},
+			{ {1,1} },
+			{ {1,1}, {2, 1}, {4, 1} },
+			{ {1,1}, {2, 1} },
+		};
+	graphAL::GraphAL g(gv);
 
-	for(const auto& point : articulation_points) {
-		std::cout << point << ' ';
+	auto [sorted, order] = g.TopologicalSort();
+
+	if(sorted) {
+		std::cout << "Topological Sorted Order: ";
+		for (const auto& ele : order) {
+			std::cout << ele << ' ';
+		}
+		std::cout << '\n';
+	} else {
+		std::cout << "The graph is undirected/has a cycle" << '\n';
 	}
-	std::cout << '\n';
 
 	return 0;
 }

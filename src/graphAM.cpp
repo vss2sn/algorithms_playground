@@ -888,5 +888,42 @@ std::unordered_set<int> GraphAM::ArticulationPoints() const {
   return articulation_points;
 }
 
+bool GraphAM::TopologicalSortUtil(std::vector<int>& sorted,
+  std::vector<bool>& visited,
+  std::vector<bool>& this_cycle,
+  const int vert) const {
+
+  this_cycle[vert] = true;
+  visited[vert] = true;
+  for(int i = 0; i < v; i++) {
+    if(g[vert][i] != 0) {
+      if(this_cycle[i] && visited[i]) {
+        return false;
+      } else if(!visited[i]) {
+        if(!TopologicalSortUtil(sorted, visited, this_cycle, i)) {
+          return false;
+        }
+      }
+    }
+  }
+  this_cycle[vert] = false;
+  sorted.push_back(vert);
+  return true;
+}
+
+std::tuple<bool, std::vector<int>> GraphAM::TopologicalSort() const {
+  std::vector<int> sorted;
+  std::vector<bool> visited(v, false);
+  std::vector<bool> this_cycle(v, false);
+  for(int i = 0; i < v; ++i) {
+    if(!visited[i]) {
+      if(!TopologicalSortUtil(sorted, visited, this_cycle, i)) {
+        return {false, std::vector<int>()};
+      }
+    }
+  }
+  std::reverse(sorted.begin(), sorted.end());
+  return {true, sorted};
+}
 
 } // namespace graphAM

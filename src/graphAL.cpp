@@ -774,6 +774,42 @@ std::unordered_set<int> GraphAL::ArticulationPoints() const {
   return articulation_points;
 }
 
+bool GraphAL::TopologicalSortUtil(std::vector<int>& sorted,
+  std::vector<bool>& visited,
+  std::vector<bool>& this_cycle,
+  const int vert) const {
+
+  this_cycle[vert] = true;
+  visited[vert] = true;
+  for(const auto& [vert2, weight] : g[vert]) {
+    if(this_cycle[vert2] && visited[vert2]) {
+      return false;
+    } else if(!visited[vert2]) {
+      if(!TopologicalSortUtil(sorted, visited, this_cycle, vert2)) {
+        return false;
+      }
+    }
+  }
+  this_cycle[vert] = false;
+  sorted.push_back(vert);
+  return true;
+}
+
+std::tuple<bool, std::vector<int>> GraphAL::TopologicalSort() const {
+  std::vector<int> sorted;
+  std::vector<bool> visited(v, false);
+  std::vector<bool> this_cycle(v, false);
+  for(int i = 0; i < v; ++i) {
+    if(!visited[i]) {
+      if(!TopologicalSortUtil(sorted, visited, this_cycle, i)) {
+        return {false, std::vector<int>()};
+      }
+    }
+  }
+  std::reverse(sorted.begin(), sorted.end());
+  return {true, sorted};
+}
+
 
 } // namespace grahAL
 

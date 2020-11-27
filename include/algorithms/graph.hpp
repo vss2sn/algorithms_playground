@@ -65,6 +65,8 @@ public:
   // Find articulation points in an undirected graph
   virtual std::unordered_set<int> ArticulationPoints() const;
 
+  // Topological sort (checks whether the graph is a directed acyclic as well)
+  virtual std::tuple<bool, std::vector<int>> TopologicalSort() const;
 };
 
 #endif  // GRAPH_HPP

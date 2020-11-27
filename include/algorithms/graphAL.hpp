@@ -50,6 +50,10 @@ private:
   void ArticulationPointsUtil(const int vert1, std::vector<bool>& visited, std::vector<int>& parent,
     std::vector<int>& tod, std::vector<int>& low, std::unordered_set<int>& articulation_points, int time) const ;
 
+  bool TopologicalSortUtil(std::vector<int>& sorted,
+    std::vector<bool>& visited, std::vector<bool>& this_cycle,
+    const int vert) const;
+
 public:
   // GraphAL(const int V = 11, const bool random = true, const bool different_weights = true);
   // GraphAL(const GraphAL& g_am);
@@ -107,6 +111,8 @@ public:
   // Find articulation points in an undirected graph
   virtual std::unordered_set<int> ArticulationPoints() const override;
 
+  // Topological sort (checks whether the graph is a directed acyclic as well)
+  virtual std::tuple<bool, std::vector<int>> TopologicalSort() const override;
 
 };
 

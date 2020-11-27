@@ -110,3 +110,8 @@ std::unordered_set<int> Graph::ArticulationPoints() const {
   std::cout << __FUNCTION__ << " not yet defined" << '\n';
   return std::unordered_set<int>();
 }
+
+std::tuple<bool, std::vector<int>> Graph::TopologicalSort() const {
+  std::cout << __FUNCTION__ << " not yet defined" << '\n';
+  return {false, std::vector<int>()};
+}
