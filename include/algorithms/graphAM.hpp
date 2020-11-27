@@ -120,6 +120,9 @@ public:
   virtual std::tuple<bool, std::vector<int>> TopologicalSort() const override;
 
   virtual std::vector<std::pair<int, int>> FindBridges() const override;
+
+  virtual bool IsBipartite() const override;
+  
 };
 
 /* ------------------------------- */

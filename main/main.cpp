@@ -10,17 +10,13 @@
 int main() {
 	std::vector<std::vector<double>> gv = {
 	    { 0, 1, 0, 0},
-	    { 1, 0, 0, 0},
+	    { 1, 0, 0, 1},
 	    { 0, 0, 0, 1},
-	    { 0, 0, 1, 0}
+	    { 0, 1, 1, 1}
 	  };
 	graphAM::GraphAM g(gv);
 
-	std::vector<std::pair<int, int>> ans =  g.FindBridges();
-	std::cout << "Bridges:" << '\n';
-	for(const auto& bridge : ans) {
-		std::cout << bridge.first << ' ' << bridge.second << '\n';
-	}
+	std::cout << g.IsBipartite() << '\n';
 
 	return 0;
 }

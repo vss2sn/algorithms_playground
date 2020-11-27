@@ -159,6 +159,8 @@ public:
 
   virtual std::vector<std::pair<int, int>> FindBridges() const;
 
+  virtual bool IsBipartite() const;
+
 };
 
 #endif  // GRAPH_HPP

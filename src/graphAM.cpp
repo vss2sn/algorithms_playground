@@ -973,4 +973,42 @@ std::vector<std::pair<int, int>> GraphAM::FindBridges() const {
   return bridges;
 }
 
+bool GraphAM::IsBipartite() const {
+  std::vector<int> side(v, -1);
+  std::queue<int> q;
+
+  for(int i = 0; i < v; ++i) {
+    for(int j = i + 1; j < v; ++j) {
+      if (g[i][j] != g[j][i]) {
+        std::cout << "The graph is not undirected" << '\n';
+        return false;
+      }
+    }
+  }
+
+  for(int vert1 = 0; vert1 < v; vert1++) {
+    if(side[vert1] == -1) {
+      q.push(vert1);
+      side[vert1] = 0;
+      while(!q.empty()) {
+        const int vert2 = q.front();
+        q.pop();
+        for (int vert3 = 0; vert3 < v; ++vert3) {
+          if(g[vert2][vert3] == 0) continue;
+          if(side[vert3] == -1) {
+            side[vert3] = side[vert2] ^ 1; // xor
+            q.push(vert3);
+          } else {
+            if(side[vert2] == side[vert3]) {
+              std::cout << vert2 << ' ' << vert3 << " have the same colour"<< '\n';
+              return false;
+            }
+          }
+        }
+      }
+    }
+  }
+  return true;
+}
+
 } // namespace graphAM

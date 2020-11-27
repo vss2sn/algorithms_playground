@@ -120,3 +120,8 @@ std::vector<std::pair<int, int>> Graph::FindBridges() const {
   std::cout << __FUNCTION__ << " not yet defined" << '\n';
   return std::vector<std::pair<int, int>>();
 }
+
+bool Graph::IsBipartite() const {
+  std::cout << __FUNCTION__ << " not yet defined" << '\n';
+  return false;
+}
