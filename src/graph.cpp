@@ -49,7 +49,7 @@ std::tuple<bool, int> Graph::FindMotherVertex () const {
 }
 
 // All Paths Between 2 vertices
-std::tuple<bool, std::vector<std::vector<int>>> Graph::allPathsBetween(int source, int sink) const{
+std::tuple<bool, std::vector<std::vector<int>>> Graph::allPathsBetween(const int source, const int sink) const{
   std::cout << __FUNCTION__ << " not yet defined" << '\n';
    return {0, std::vector<std::vector<int>>()};
 }

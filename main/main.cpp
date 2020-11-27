@@ -8,35 +8,24 @@
 #include "algorithms/sort_iter.hpp"
 
 int main() {
-	// std::vector<std::vector<double>> gv = {
-	//     { 0, 1, 1, 0, 0},
-	//     { 0, 0, 0, 0, 0},
-	//     { 0, 1, 0, 0, 0},
-	//     { 0, 1, 1, 0, 1},
-	//     { 0, 1, 1, 0, 0},
-	//   };
-	// graphAM::GraphAM g(gv);
+	std::vector<std::vector<double>> gv = {
+	    { 0, 3, 5, 0},
+	    { 0, 0, 0, 7},
+	    { 0, 0, 0, 1},
+	    { 0, 0, 0, 0}
+	  };
+	graphAM::GraphAM g(gv);
 
-	std::vector<std::vector<std::pair<int, double>>> gv = {
-			{ {1,1}, {2, 1} },
-			{},
-			{ {1,1} },
-			{ {1,1}, {2, 1}, {4, 1} },
-			{ {1,1}, {2, 1} },
-		};
-	graphAL::GraphAL g(gv);
+	// std::vector<std::vector<std::pair<int, double>>> gv = {
+	// 		{ {1,1}, {2, 1} },
+	// 		{},
+	// 		{ {1,1} },
+	// 		{ {1,1}, {2, 1}, {4, 1} },
+	// 		{ {1,1}, {2, 1} },
+	// 	};
+	// graphAL::GraphAL g(gv);
 
-	auto [sorted, order] = g.TopologicalSort();
-
-	if(sorted) {
-		std::cout << "Topological Sorted Order: ";
-		for (const auto& ele : order) {
-			std::cout << ele << ' ';
-		}
-		std::cout << '\n';
-	} else {
-		std::cout << "The graph is undirected/has a cycle" << '\n';
-	}
+	std::cout << g.fordFulkerson(0, 3) << '\n';
 
 	return 0;
 }

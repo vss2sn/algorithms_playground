@@ -6,6 +6,10 @@
 
 namespace sort {
 
+/**
+ * @brief Bubble sort
+ * @param [in] to_sort vector to be sorted
+ */
 template<typename T>
 void BubbleSort(std::vector<T>& to_sort) {
 	int v = to_sort.size();
@@ -22,6 +26,10 @@ void BubbleSort(std::vector<T>& to_sort) {
 	}
 }
 
+/**
+ * @brief Insertion sort
+ * @param [in] to_sort vector to be sorted
+ */
 template<typename T>
 void InsertionSort(std::vector<T>& to_sort) {
 	int v = to_sort.size();
@@ -37,7 +45,10 @@ void InsertionSort(std::vector<T>& to_sort) {
 	}
 }
 
-// Playing with STL
+/**
+ * @brief Insertion sort with copy backward
+ * @param [in] to_sort vector to be sorted
+ */
 template<typename T>
 void InsertionSortWithCb(std::vector<T>& to_sort) {
 	int v = to_sort.size();
@@ -53,7 +64,10 @@ void InsertionSortWithCb(std::vector<T>& to_sort) {
 	}
 }
 
-// Playing with STL
+/**
+ * @brief Insertion sort with copy backward and find using reverse iterators
+ * @param [in] to_sort vector to be sorted
+ */
 template<typename T>
 void InsertionSortWithRiCb(std::vector<T>& to_sort) {
 	int v = to_sort.size();
@@ -92,6 +106,10 @@ int BinarySearchUtil(const std::vector<T>& to_search, T key, int begin, int end)
 	}
 }
 
+/**
+ * @brief Insertion sort with binary search
+ * @param [in] to_sort vector to be sorted
+ */
 template<typename T>
 void InsertionSortWithBinarySearch(std::vector<T>& to_sort) {
 	int v = to_sort.size();
@@ -109,8 +127,12 @@ void InsertionSortWithBinarySearch(std::vector<T>& to_sort) {
 	}
 }
 
-// Playing with STL
-// NOTE: This is faster than the `STL optimized version` below
+
+/**
+ * @brief Insertion sort with copy backward and binary search
+ * @param [in] to_sort vector to be sorted
+ * @details This is faster than the `STL optimized version` below
+ */
 template<typename T>
 void InsertionSortWithBinarySearchWithCb(std::vector<T>& to_sort) {
 	int v = to_sort.size();
@@ -124,7 +146,10 @@ void InsertionSortWithBinarySearchWithCb(std::vector<T>& to_sort) {
 	}
 }
 
-// Playing with STL
+/**
+ * @brief Insertion sort optimized
+ * @param [in] to_sort vector to be sorted
+ */
 template<typename T>
 void InsertionSortOptimized(std::vector<T>& to_sort) {
 	for(auto it = to_sort.begin(); it != to_sort.end(); ++it) {
@@ -132,7 +157,11 @@ void InsertionSortOptimized(std::vector<T>& to_sort) {
 	}
 }
 
-// NOTE: This is faster than the `STL optimized version` above
+/**
+ * @brief Insertion sort optimized using copy backwards instead of rotate
+ * @param [in] to_sort vector to be sorted
+ * @details This is faster than the `STL optimized version` above
+ */
 template<typename T>
 void InsertionSortOptimizedWithCb(std::vector<T>& to_sort) {
 	for(auto it = to_sort.begin() + 1; it != to_sort.end(); ++it) {
@@ -183,6 +212,10 @@ void MergeSortUtil(std::vector<T>& to_sort, int begin, int end) {
 	}
 }
 
+/**
+ * @brief Merge sort
+ * @param [in] to_sort vector to be sorted
+ */
 template<typename T>
 void MergeSort(std::vector<T>& to_sort) {
 	int v = to_sort.size();
@@ -226,6 +259,10 @@ void MergeSortInPlaceUtil(std::vector<T>& to_sort, int begin, int end) {
 	}
 }
 
+/**
+ * @brief In place merge sort
+ * @param [in] to_sort vector to be sorted
+ */
 template<typename T>
 void MergeSortInPlace(std::vector<T>& to_sort) {
 	int v = to_sort.size();
@@ -255,12 +292,20 @@ void QuickSortUtil(std::vector<T>& to_sort, int start, int end) {
 	}
 }
 
+/**
+ * @brief Quick sort
+ * @param [in] to_sort vector to be sorted
+ */
 template<typename T>
 void QuickSort(std::vector<T>& to_sort) {
 	int v = to_sort.size();
 	QuickSortUtil(to_sort, 0, v-1);
 }
 
+/**
+ * @brief Selection sort
+ * @param [in] to_sort vector to be sorted
+ */
 template<typename T>
 void SelectionSort(std::vector<T>& to_sort) {
   int v = to_sort.size();
@@ -275,7 +320,11 @@ void SelectionSort(std::vector<T>& to_sort) {
   }
 }
 
-// Only valid for positive values
+/**
+ * @brief Bucket sort
+ * @param [in] to_sort vector to be sorted
+ * @details Only valid for positive values
+ */
 template <typename T>
 void BucketSort(std::vector<T>& to_sort, const int n = 10) {
 	if(n <= 0) {
@@ -300,6 +349,10 @@ void BucketSort(std::vector<T>& to_sort, const int n = 10) {
 	}
 }
 
+/**
+ * @brief Counting sort
+ * @param [in] to_sort vector to be sorted
+ */
 template<typename T>
 void CountingSort(std::vector<T>& to_sort) {
 	const int v = to_sort.size();
@@ -347,6 +400,10 @@ void HeapSortUtilHeapify(std::vector<T>& to_sort, const int n, const int i) {
 	}
 }
 
+/**
+ * @brief Heap sort
+ * @param [in] to_sort vector to be sorted
+ */
 template<typename T>
 void HeapSort(std::vector<T>& to_sort) {
 	int v = to_sort.size();

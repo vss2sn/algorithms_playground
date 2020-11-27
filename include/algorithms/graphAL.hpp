@@ -79,7 +79,7 @@ public:
   virtual std::tuple<bool, int> FindMotherVertex () const override;
 //
 //   // All Paths Between 2 vertices
-//   virtual std::tuple<bool, std::vector<std::vector<int>>> allPathsBetween(int source, int sink) const override;
+//   virtual std::tuple<bool, std::vector<std::vector<int>>> allPathsBetween(const int source, const int sink) const override;
 //
   // Colour graph using n_c colours
   virtual std::tuple<bool, std::vector<int>> colourGraph(int n_c) const override;
