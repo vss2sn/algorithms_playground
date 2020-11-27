@@ -117,6 +117,8 @@ public:
   virtual std::vector<std::pair<int, int>> FindBridges() const override;
 
   virtual bool IsBipartite() const override;
+
+  virtual bool DivideIntoTwoCliques() const override;
 };
 
 }  // namespace graphAL

@@ -977,15 +977,6 @@ bool GraphAM::IsBipartite() const {
   std::vector<int> side(v, -1);
   std::queue<int> q;
 
-  for(int i = 0; i < v; ++i) {
-    for(int j = i + 1; j < v; ++j) {
-      if (g[i][j] != g[j][i]) {
-        std::cout << "The graph is not undirected" << '\n';
-        return false;
-      }
-    }
-  }
-
   for(int vert1 = 0; vert1 < v; vert1++) {
     if(side[vert1] == -1) {
       q.push(vert1);
@@ -1009,6 +1000,25 @@ bool GraphAM::IsBipartite() const {
     }
   }
   return true;
+}
+
+bool GraphAM::DivideIntoTwoCliques() const {
+  auto g2 = g;
+  for(auto& row : g2) {
+    for(auto& ele : row) {
+      if(ele != 0) {
+        ele = 0;
+      } else {
+        ele = 1;
+      }
+    }
+  }
+  for(int i = 0; i < v; i++) {
+    g2[i][i] = 0;
+  }
+
+  GraphAM gcomp(g2);
+  return gcomp.IsBipartite();
 }
 
 } // namespace graphAM

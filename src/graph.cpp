@@ -125,3 +125,8 @@ bool Graph::IsBipartite() const {
   std::cout << __FUNCTION__ << " not yet defined" << '\n';
   return false;
 }
+
+bool Graph::DivideIntoTwoCliques() const {
+  std::cout << __FUNCTION__ << " not yet defined" << '\n';
+  return false;
+}

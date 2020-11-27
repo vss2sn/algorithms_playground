@@ -810,7 +810,6 @@ std::tuple<bool, std::vector<int>> GraphAL::TopologicalSort() const {
   return {true, sorted};
 }
 
-
 } // namespace grahAL
 
 // using Pair = std::pair<int, double>;

@@ -157,10 +157,23 @@ public:
    */
   virtual std::tuple<bool, std::vector<int>> TopologicalSort() const;
 
+  /**
+   * @brief Find bridges within the graph
+   * @return vector of edges represented as start and end vertices that are bridges
+   */
   virtual std::vector<std::pair<int, int>> FindBridges() const;
 
+  /**
+   * @brief checks whether the graph is bipartite
+   * @return bool whether the  graph is bipartite
+   */
   virtual bool IsBipartite() const;
 
+  /**
+   * @brief checks whether the graph can be divided into 2 cliques
+   * @return bool whether the graph can be divided into 2 cliques
+   */
+  virtual bool DivideIntoTwoCliques() const;
 };
 
 #endif  // GRAPH_HPP
