@@ -810,6 +810,34 @@ std::tuple<bool, std::vector<int>> GraphAL::TopologicalSort() const {
   return {true, sorted};
 }
 
+bool GraphAL::IsBipartite() const {
+  std::vector<int> side(v, -1);
+  std::queue<std::pair<int, double>> q;
+
+  for(int vert1 = 0; vert1 < v; vert1++) {
+    if(side[vert1] == -1) {
+      q.push({vert1, 0});
+      side[vert1] = 0;
+      while(!q.empty()) {
+        const int vert2 = q.front().first;
+        q.pop();
+        for (const auto& [vert3, weight] : g[vert2]) {
+          if(side[vert3] == -1) {
+            side[vert3] = side[vert2] ^ 1; // xor
+            q.push({vert3, 0});
+          } else {
+            if(side[vert2] == side[vert3]) {
+              std::cout << vert2 << ' ' << vert3 << " have the same colour"<< '\n';
+              return false;
+            }
+          }
+        }
+      }
+    }
+  }
+  return true;
+}
+
 } // namespace grahAL
 
 // using Pair = std::pair<int, double>;
