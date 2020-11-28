@@ -118,7 +118,7 @@ public:
 
   virtual bool IsBipartite() const override;
 
-  // virtual bool DivideIntoTwoCliques() const override;
+  virtual bool DivideIntoTwoCliques() const override;
 };
 
 }  // namespace graphAL

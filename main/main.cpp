@@ -23,7 +23,7 @@ int main() {
   };
 	graphAL::GraphAL g(gv);
 
-	std::cout << g.IsBipartite() << '\n';
+	std::cout << g.DivideIntoTwoCliques() << '\n';
 
 	return 0;
 }

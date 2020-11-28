@@ -838,6 +838,28 @@ bool GraphAL::IsBipartite() const {
   return true;
 }
 
+bool GraphAL::DivideIntoTwoCliques() const {
+  std::vector<std::vector<std::pair<int, double>>> g2(v);
+  for(int row = 0; row < v; ++row) {
+    int cur = 0;
+    for(int edge = 0; edge < g[row].size(); ++edge) {
+      if(g[row][edge].first == row) {
+        std::cout << "Self edge exists" << '\n';
+        return false;
+      }
+      while(cur < g[row][edge].first) {
+        if(cur != row) {
+          g2[row].push_back({cur, 1});
+        }
+        ++cur;
+      }
+    }
+  }
+
+  GraphAL gcomp(g2);
+  return gcomp.IsBipartite();
+}
+
 } // namespace grahAL
 
 // using Pair = std::pair<int, double>;
