@@ -174,6 +174,29 @@ public:
    * @return bool whether the graph can be divided into 2 cliques
    */
   virtual bool DivideIntoTwoCliques() const;
+
+  /**
+   * @brief Assigns each vertex a level based on how many edges it took to reach the vertex from the source and checks whether the sink was reached
+   * @param [in] source source vertex
+   * @param [in] sink sink vertex
+   */
+  virtual std::tuple<bool, std::vector<int>> CreateLevelGraph(const int source, const int sink) const;
+
+  /**
+   * @brief Assigns each vertex a level based on how many edges it took to reach the vertex from the source and checks whether the sink was reached
+   * @param [in] source source vertex
+   * @param [in] sink sink vertex
+   * @param [in] g graph for which the levels are to be assigned
+   */
+  virtual std::tuple<bool, std::vector<int>> CreateLevelGraph(const int source, const int sink, const std::vector<std::vector<double>>& g) const;
+
+  /**
+   * @brief Calculate maximum flow between a source and a sink using Dinac's algorithm
+   * @param [in] source source vertex
+   * @param [in] sink sink vertex
+   */
+  virtual double DinacsAlgorithm(const int source, const int sink) const;
+
 };
 
 #endif  // GRAPH_HPP

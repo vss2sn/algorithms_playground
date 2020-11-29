@@ -118,3 +118,18 @@ bool Graph::DivideIntoTwoCliques() const {
   std::cout << __FUNCTION__ << " not yet defined" << '\n';
   return false;
 }
+
+std::tuple<bool, std::vector<int>> Graph::CreateLevelGraph(const int source, const int sink, const std::vector<std::vector<double>>& g) const {
+  std::cout << __FUNCTION__ << " not yet defined" << '\n';
+  return {false, std::vector<int>()};
+}
+
+std::tuple<bool, std::vector<int>> Graph::CreateLevelGraph(const int source, const int sink) const {
+  std::cout << __FUNCTION__ << " not yet defined" << '\n';
+  return {false, std::vector<int>()};
+}
+
+double Graph::DinacsAlgorithm(const int source, const int sink) const {
+  std::cout << __FUNCTION__ << " not yet defined" << '\n';
+  return 0;
+}

@@ -9,6 +9,9 @@
 #include <utility>
 #include <vector>
 
+#include <chrono>
+#include <thread>
+
 #include "algorithms/graphAM.hpp"
 
 namespace graphAM {
@@ -1019,6 +1022,89 @@ bool GraphAM::DivideIntoTwoCliques() const {
 
   GraphAM gcomp(g2);
   return gcomp.IsBipartite();
+}
+
+std::tuple<bool, std::vector<int>> GraphAM::CreateLevelGraph(const int source, const int sink) const {
+  std::vector<int> levels(v, -1);
+  int level = 0;
+  std::queue<int> q;
+  q.push(source);
+  while(!q.empty()) {
+    const int size = q.size();
+    for(int i = 0; i < size; ++i) {
+      const int vert = q.front();
+      q.pop();
+      levels[vert] = level;
+      for(int vert2 = 0; vert2 < v; ++vert2) {
+        if(g[vert][vert2] != 0 && levels[vert2] == -1) {
+          q.push(vert2);
+        }
+      }
+      ++level;
+    }
+  }
+  return {levels[sink] != -1, levels};
+}
+
+std::tuple<bool, std::vector<int>> GraphAM::CreateLevelGraph(const int source, const int sink, const std::vector<std::vector<double>>& g) const {
+  std::vector<int> levels(v, -1);
+  int level = 0;
+  std::queue<int> q;
+  q.push(source);
+  while(!q.empty()) {
+    const int size = q.size();
+    for(int i = 0; i < size; ++i) {
+      const int vert = q.front();
+      q.pop();
+      if(levels[vert] != -1) continue;
+      levels[vert] = level;
+      for(int vert2 = 0; vert2 < v; ++vert2) {
+        if(g[vert][vert2] != 0 && levels[vert2] == -1) {
+          q.push(vert2);
+        }
+      }
+    }
+    ++level;
+  }
+  return {levels[sink] != -1, levels};
+}
+
+double GraphAM::SendDinacFlowUtil(const int source, const int sink, double flow, const std::vector<int>& levels, const std::vector<std::vector<double>>& max_flow, std::vector<std::vector<double>>& rem_capacity) {
+  if(source == sink) return flow;
+  for(int vert2 = 0; vert2 < v; ++vert2) {
+    if(max_flow[source][vert2] != 0 &&
+      rem_capacity[source][vert2] != 0 &&
+      levels[vert2] == levels[source] + 1) {
+      const double temp_flow = SendDinacFlowUtil(vert2, sink, std::min(flow, rem_capacity[source][vert2]), levels, max_flow, rem_capacity);
+      if(temp_flow > 0) {
+        g[source][vert2] += temp_flow;
+        g[vert2][source] -= temp_flow;
+        rem_capacity[source][vert2] -= temp_flow;
+        rem_capacity[vert2][source] += temp_flow;
+        return temp_flow;
+      }
+    }
+  }
+  return 0;
+}
+
+double GraphAM::DinacsAlgorithmUtil(const int source, const int sink, const std::vector<std::vector<double>>& original) {
+  double flow = std::numeric_limits<int>::max();
+  double total_flow = 0;
+  const auto max_flow = original;
+  auto rem_capacity = original;
+  GraphAM g_cap(g);
+  auto ans = CreateLevelGraph(source, sink, rem_capacity);
+  while(std::get<0>(ans)) {
+    total_flow += SendDinacFlowUtil(source, sink, flow, std::get<1>(ans), max_flow, rem_capacity);
+    ans = CreateLevelGraph(source, sink, rem_capacity);
+  }
+  return total_flow;
+}
+
+double GraphAM::DinacsAlgorithm(const int source, const int sink) const {
+  GraphAM residual(std::vector<std::vector<double>>(v, std::vector<double>(v,0)));
+  return residual.DinacsAlgorithmUtil(source, sink, g);
 }
 
 } // namespace graphAM
