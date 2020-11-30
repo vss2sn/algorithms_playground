@@ -63,6 +63,7 @@ private:
   double SendDinacFlowUtil(const int source, const int sink, double flow, const std::vector<int>& levels, const std::vector<std::vector<double>>& max_flow, std::vector<std::vector<double>>& rem_capacity) ;
   double DinacsAlgorithmUtil(const int source, const int sink, const std::vector<std::vector<double>>& original);
 
+  bool HamiltonianPathBacktrackUtil(const int current, std::vector<bool>& visited, int level, std::vector<int>& path) const;
 
 public:
   GraphAM(const int V = 11, const bool random = true, const bool different_weights = true);
@@ -133,6 +134,7 @@ public:
   virtual std::tuple<bool, std::vector<int>> CreateLevelGraph(const int source, const int sink) const override;
   virtual std::tuple<bool, std::vector<int>> CreateLevelGraph(const int source, const int sink, const std::vector<std::vector<double>>& g) const override;
   virtual double DinacsAlgorithm(const int source, const int sink) const override;
+  virtual std::tuple<bool, std::vector<int>> HamiltonianPath() const override;
 };
 
 /* ------------------------------- */

@@ -197,6 +197,7 @@ public:
    */
   virtual double DinacsAlgorithm(const int source, const int sink) const;
 
+  virtual std::tuple<bool, std::vector<int>> HamiltonianPath() const;
 };
 
 #endif  // GRAPH_HPP

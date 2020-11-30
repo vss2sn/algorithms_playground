@@ -8,15 +8,26 @@
 #include "algorithms/sort_iter.hpp"
 
 int main() {
+
 	std::vector<std::vector<double>> gv =
 	{
-		{0, 16, 13, 0, 0, 0},
-    {0, 0, 10, 12, 0, 0},
-    {0, 4, 0, 0, 14, 0},
-    {0, 0, 9, 0, 0, 20},
-    {0, 0, 0, 7, 0, 4},
+		{0, 1, 1, 0, 0, 0},
+    {0, 0, 1, 1, 0, 0},
+    {0, 1, 0, 1, 1, 0},
+    {0, 0, 1, 0, 1, 1},
+    {0, 0, 0, 1, 0, 1},
     {0, 0, 0, 0, 0, 0}
   };
+
+	// std::vector<std::vector<double>> gv =
+	// {
+	// 	{0, 16, 13, 0, 0, 0},
+  //   {0, 0, 10, 12, 0, 0},
+  //   {0, 4, 0, 0, 14, 0},
+  //   {0, 0, 9, 0, 0, 20},
+  //   {0, 0, 0, 7, 0, 4},
+  //   {0, 0, 0, 0, 0, 0}
+  // };
 
 	// std::vector<std::vector<std::pair<int, double>>> gv = {
 	// 	{ {1,1}, {2,1}, {3,1} },
@@ -26,7 +37,6 @@ int main() {
   // };
 	graphAM::GraphAM g(gv);
 
-	std::cout << g.DinacsAlgorithm(0, 5) << '\n';
-
+	auto [path_found, path] = g.HamiltonianPath();
 	return 0;
 }

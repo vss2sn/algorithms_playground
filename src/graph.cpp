@@ -133,3 +133,8 @@ double Graph::DinacsAlgorithm(const int source, const int sink) const {
   std::cout << __FUNCTION__ << " not yet defined" << '\n';
   return 0;
 }
+
+std::tuple<bool, std::vector<int>> Graph::HamiltonianPath() const {
+  std::cout << __FUNCTION__ << " not yet defined" << '\n';
+  return {false, std::vector<int>()};
+}

@@ -1107,4 +1107,46 @@ double GraphAM::DinacsAlgorithm(const int source, const int sink) const {
   return residual.DinacsAlgorithmUtil(source, sink, g);
 }
 
+bool GraphAM::HamiltonianPathBacktrackUtil(const int current,
+  std::vector<bool>& visited, int level, std::vector<int>& path) const {
+  ++level;
+  if(level == v) return true;
+  visited[current] = true;
+  path.push_back(current);
+  // std::this_thread::sleep_for(std::chrono::milliseconds(500));
+  for(int vert = 0; vert < v; vert++) {
+    if(g[current][vert] != 0 &&
+      current != vert && !visited[vert] && HamiltonianPathBacktrackUtil(vert, visited, level, path)) {
+      return true;
+    }
+  }
+  visited[current] = false;
+  path.pop_back();
+  return false;
+}
+
+std::tuple<bool, std::vector<int>> GraphAM::HamiltonianPath() const {
+  std::vector<bool> visited(v, false);
+  std::vector<int> path;
+  path.reserve(v);
+  int level = 0;
+  bool path_found = false;
+  for(int vert = 0; vert < v; ++vert) {
+    path_found = HamiltonianPathBacktrackUtil(vert, visited, level, path);
+    if(path_found) {
+      break;
+    }
+  }
+  if(path_found) {
+    std::cout << "Path: ";
+    for(const auto& ele : path) {
+      std::cout << ele << ' ';
+    }
+    std::cout << '\n';
+  } else {
+    std::cout << "No hamiltonian path found" << '\n';
+  }
+  return {path_found, path};
+}
+
 } // namespace graphAM
