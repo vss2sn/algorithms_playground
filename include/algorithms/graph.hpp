@@ -179,6 +179,7 @@ public:
    * @brief Assigns each vertex a level based on how many edges it took to reach the vertex from the source and checks whether the sink was reached
    * @param [in] source source vertex
    * @param [in] sink sink vertex
+   * @return bool whether the graph levels were assigned and the level of each vertex
    */
   virtual std::tuple<bool, std::vector<int>> CreateLevelGraph(const int source, const int sink) const;
 
@@ -187,6 +188,7 @@ public:
    * @param [in] source source vertex
    * @param [in] sink sink vertex
    * @param [in] g graph for which the levels are to be assigned
+   * @return bool whether the graph levels were assigned and the level of each vertex
    */
   virtual std::tuple<bool, std::vector<int>> CreateLevelGraph(const int source, const int sink, const std::vector<std::vector<double>>& g) const;
 
@@ -194,9 +196,14 @@ public:
    * @brief Calculate maximum flow between a source and a sink using Dinac's algorithm
    * @param [in] source source vertex
    * @param [in] sink sink vertex
+   * @return maximum flow
    */
   virtual double DinacsAlgorithm(const int source, const int sink) const;
 
+  /**
+   * @brief Find a Hamiltonian path if one exists
+   * @return bool whether a Hamniltonian path was found and the path
+   */
   virtual std::tuple<bool, std::vector<int>> HamiltonianPath() const;
 };
 

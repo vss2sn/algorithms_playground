@@ -1110,16 +1110,16 @@ double GraphAM::DinacsAlgorithm(const int source, const int sink) const {
 bool GraphAM::HamiltonianPathBacktrackUtil(const int current,
   std::vector<bool>& visited, int level, std::vector<int>& path) const {
   ++level;
-  if(level == v) return true;
   visited[current] = true;
   path.push_back(current);
-  // std::this_thread::sleep_for(std::chrono::milliseconds(500));
+  if(level == v) return true;
   for(int vert = 0; vert < v; vert++) {
     if(g[current][vert] != 0 &&
       current != vert && !visited[vert] && HamiltonianPathBacktrackUtil(vert, visited, level, path)) {
       return true;
     }
   }
+  --level;
   visited[current] = false;
   path.pop_back();
   return false;

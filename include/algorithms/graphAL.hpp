@@ -54,6 +54,8 @@ private:
     std::vector<bool>& visited, std::vector<bool>& this_cycle,
     const int vert) const;
 
+  bool HamiltonianPathBacktrackUtil(const int vert, std::vector<bool>& visited, int level, std::vector<int>& path) const;
+
 public:
   // GraphAL(const int V = 11, const bool random = true, const bool different_weights = true);
   // GraphAL(const GraphAL& g_am);
@@ -119,6 +121,8 @@ public:
   virtual bool IsBipartite() const override;
 
   virtual bool DivideIntoTwoCliques() const override;
+
+  std::tuple<bool, std::vector<int>> HamiltonianPath() const override;
 };
 
 }  // namespace graphAL

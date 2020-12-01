@@ -860,6 +860,46 @@ bool GraphAL::DivideIntoTwoCliques() const {
   return gcomp.IsBipartite();
 }
 
+bool GraphAL::HamiltonianPathBacktrackUtil(const int vert, std::vector<bool>& visited, int level, std::vector<int>& path) const {
+  ++level;
+  visited[vert] = true;
+  path.push_back(vert);
+  if(level == v) return true;
+  for(const auto& [vert2, weight] : g[vert]) {
+    if(!visited[vert2] && HamiltonianPathBacktrackUtil(vert2, visited, level, path) && vert2 != vert) {
+      return true;
+    }
+  }
+  --level;
+  visited[vert] = false;
+  path.pop_back();
+  return false;
+}
+
+std::tuple<bool, std::vector<int>> GraphAL::HamiltonianPath() const {
+  std::vector<bool> visited(v, false);
+  std::vector<int> path;
+  path.reserve(v);
+  int level = 0;
+  bool path_found = false;
+  for(int vert = 0; vert < v; ++vert) {
+    path_found = HamiltonianPathBacktrackUtil(vert, visited, level, path);
+    if(path_found) {
+      break;
+    }
+  }
+  if(path_found) {
+    std::cout << "Path: ";
+    for(const auto& ele : path) {
+      std::cout << ele << ' ';
+    }
+    std::cout << '\n';
+  } else {
+    std::cout << "No hamiltonian path found" << '\n';
+  }
+  return {path_found, path};
+}
+
 } // namespace grahAL
 
 // using Pair = std::pair<int, double>;
